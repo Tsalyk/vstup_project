@@ -6,4 +6,4 @@
 * creating recommendations for abiturients
 * convenient user interface
 ### Wiki contents
-* Homework #1 report
+* [Homework #1 report](https://github.com/Tsalyk/vstup_project/wiki/Homework-1-Report)
