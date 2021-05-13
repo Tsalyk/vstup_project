@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/ec2f8f4143.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200;300;400;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
+  <title>UCU CHANCE</title>
+</head>
+
+<body>
+  <!-- Header -->
+  <header id="header-home">
+    <div class="container">
+      <nav id="main-nav">
+        <img src="{{ url_for('static',filename='img/logo.png') }}" alt="LOGO" id="logo">
+        <ul>
+          <li><a href="ucu_chance" class="current">Home</a></li>
+          <li><a href="chance_calculator">Calculate</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-content">
+        <h1>Calculate Your Chance For <span class="txt-type" data-weight="3000"
+            data-words='["Computer Science ", "Business Analytics ", "Artes Liberales ", "Theology ", "Law ", "Ethics Politics ", "Social Work "]'></span>
+        </h1>
+        <p class="lead">Порахуй шанс свого вступу до УКУ на будь-яку спеціальність! </p>
+        <a href="chance_calculator" class="btn-light">CALCULATE</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Footer -->
+  <footer id="main-footer">
+    <div class="footer-content container">
+      <p>Copyright &copy; 2021. All Rights Reserved</p>
+      <div class="social">
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Tim Kozak</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Taras Onyshkiv</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Markiian Tsalyk</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Severyn Peleshko</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Oksana Sadova</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static',filename='js/typewriter.js') }}"></script>
+</body>
+
+</html>

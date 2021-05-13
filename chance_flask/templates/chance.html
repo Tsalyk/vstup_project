@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/ec2f8f4143.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200;300;400;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
+  <title>Calculate Chance</title>
+</head>
+
+<body>
+  <!-- Header -->
+  <header id="chance-home">
+    <div class="container">
+      <nav id="main-nav">
+        <img src="{{ url_for('static',filename='img/logo.png') }}" alt="LOGO" id="logo">
+        <ul>
+          <li><a href="ucu_chance">Home</a></li>
+          <li><a href="chance_calculator" class="current">Calculate</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-content">
+        <h1>Chance Calculator <span class="txt-type" data-weight="3000"
+            data-words='["Computer Science ", "Business Analytics ", "Artes Liberales ", "Theology ", "Law ", "Ethics Politics ", "Social Work "]'></span>
+        </h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- Info Section -->
+  <section id="home-b" class="text-center">
+    <div class="stats">
+      <div>
+        <ul>
+          <li><i class="fas fa-users fa-2x"></i></li>
+          <li class="stats-title">First-Year Students</li>
+          <li class="stats-number">400</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><i class="fas fa-award fa-2x"></i></li>
+          <li class="stats-title">Specialties</li>
+          <li class="stats-number">11</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><i class="fas fa-hourglass-start fa-2x"></i></li>
+          <li class="stats-title">Something</li>
+          <li class="stats-number">100</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><i class="fas fa-thumbs-up fa-2x"></i></li>
+          <li class="stats-title">Discounts</li>
+          <li class="stats-number">135</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="solid-line"></div>
+
+  <!-- Form -->
+  <section class="specialty-form">
+    <div class="form-content container">
+      <form action="/ucu_chance" method="POST">
+
+        <div class="form-questions even-form">
+          <div>
+            <h1>EXAM 1</h1>
+            <input type="text" class="input-submit"></input>
+          </div>
+          <div>
+            <h1>EXAM 2</h1>
+            <input type="text" class="input-submit"></input>
+          </div>
+          <div>
+            <h1>EXAM 3</h1>
+            <input type="text" class="input-submit"></input>
+          </div>
+        </div>
+
+        <div class="some-margin"></div>
+
+        <div class="form-questions">
+          <!-- University Select -->
+          <div>
+            <h1>UNIVERSITY</h1>
+            <div class="select">
+              <select name="slct" id="slct">
+                <option selected disabled></option>
+                <option value="3">Ukrainian Catholic University</option>
+              </select>
+            </div>
+          </div>
+          <!-- Specialty Select -->
+          <div>
+            <h1>SPECIALTY</h1>
+            <div class="select">
+              <select name="slct" id="slct">
+                <option selected disabled></option>
+                <option value="1">Pure CSS</option>
+                <option value="2">No JS</option>
+                <option value="3">Nice!</option>
+              </select>
+            </div>
+          </div>
+          <!-- Submit -->
+          <div>
+            <h1 class="hidden-heading">SEARCH</h1>
+            <button type=" submit" class="button-submit">SEARCH</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+  <div class="solid-line"></div>
+
+  <section class="personal-info">
+    <div class="container">
+      <h1>EXAM RESULTS</h1>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="main-footer">
+    <div class="footer-content container">
+      <p>Copyright &copy; 2021. All Rights Reserved</p>
+      <div class="social">
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Tim Kozak</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Taras Onyshkiv</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Markiian Tsalyk</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Severyn Peleshko</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Oksana Sadova</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/select.js"></script>
+</body>
+
+</html>

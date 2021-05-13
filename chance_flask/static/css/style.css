@@ -1,0 +1,402 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1280px;
+  padding: 1.5rem;
+  margin: auto;
+  overflow: hidden;
+}
+
+.btn-main,
+.btn-light,
+.btn-dark {
+  display: inline-block;
+  font-size: 1.5rem;
+  padding: 0.8rem 2rem;
+  transition: all 0.5s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-main {
+  color: #333;
+  background-color: #ffbc00;
+}
+
+.btn-light {
+  color: #333;
+  background-color: #f4f4f4;
+}
+
+.btn-dark {
+  color: #f4f4f4;
+  background-color: #333;
+}
+
+button[class^="btn-"]:hover,
+a[class^="btn-"]:hover,
+input[class^="btn-"]:hover {
+  background-color: #ffbc00;
+}
+
+.lead {
+  font-size: 1.3rem;
+  margin-bottom: 2rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.py-1 {
+  padding: 1rem 0;
+}
+
+.py-2 {
+  padding: 2rem 0;
+}
+
+.py-3 {
+  padding: 3rem 0;
+}
+
+.py-4 {
+  padding: 4rem 0;
+}
+
+.my-1 {
+  margin: 1rem 0;
+}
+
+.my-2 {
+  margin: 2rem 0;
+}
+
+.my-3 {
+  margin: 3rem 0;
+}
+
+.my-4 {
+  margin: 4rem 0;
+}
+
+.section-title {
+  font-size: 2rem;
+  display: block;
+  padding-bottom: 0.5rem;
+  text-align: center;
+  font-weight: 100;
+  text-transform: uppercase;
+}
+
+.bottom-line {
+  height: 2px;
+  width: 3rem;
+  background: #ffbc00;
+  display: block;
+  margin: 0 auto 1rem auto;
+}
+
+body {
+  font-family: "Dosis", sans-serif;
+  line-height: 1.6;
+  background: #fff;
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+}
+
+ul {
+  list-style: none;
+}
+
+h2,
+h3,
+h4 {
+  text-transform: uppercase;
+}
+
+img {
+  width: 100%;
+}
+
+#logo {
+  width: 70px;
+  height: 70px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+#main-nav {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+}
+#main-nav ul {
+  display: flex;
+}
+#main-nav li {
+  padding: 1rem 1.5rem;
+}
+#main-nav a {
+  text-decoration: none;
+  color: #fff;
+  text-transform: uppercase;
+  border-bottom: 3px transparent solid;
+  padding-bottom: 0.5rem;
+  transition: border-color 0.5s;
+}
+#main-nav a:hover {
+  border-color: #ccc;
+}
+#main-nav a.current {
+  border-color: #ffbc00;
+}
+
+#header-home {
+  background: url("../img/ucu_background.jpg") no-repeat center right/cover;
+  height: 100vh;
+  color: #fff;
+}
+#header-home .header-content {
+  text-align: center;
+  padding-top: 20%;
+}
+#header-home .header-content h1 {
+  font-size: 4rem;
+  line-height: 1.2;
+}
+
+#home-a .specials {
+  margin-top: 3rem;
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+#main-footer {
+  box-sizing: border-box;
+  background: #333;
+  color: #fff;
+  height: inherit;
+}
+#main-footer .footer-content {
+  display: flex;
+  justify-content: space-between;
+  height: 5rem;
+  align-items: center;
+}
+#main-footer .footer-content .social .fab {
+  margin-right: 4rem;
+  border: 2px #fff solid;
+  border-radius: 50%;
+  color: #fff;
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+  text-align: center;
+  padding: 0.5rem;
+}
+#main-footer .footer-content .social .fab:hover {
+  background: #ffbc00;
+}
+
+#main-footer .footer-content .social {
+  display: flex;
+  flex-direction: columns;
+  color: #fff;
+}
+
+#main-footer .footer-content .credential {
+  display: grid;
+  grid-template-columns: 1fr;
+  /* align-items: center;
+  justify-content: center; */
+  color: #fff;
+  text-align: center;
+}
+
+#main-footer .footer-content .credential p {
+  margin-top: 0.3rem;
+  margin-right: 4rem;
+}
+
+#home-b .stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+#home-b .stats li {
+  line-height: 2;
+}
+#home-b .stats li.stats-title {
+  font-size: 1rem;
+}
+#home-b .stats li.stats-number {
+  font-size: 2rem;
+  font-weight: bold;
+}
+#home-b .stats div {
+  padding: 1.7rem 0;
+}
+#home-b .stats div:nth-child(odd) {
+  background: #f4f4f4;
+}
+#home-b .stats div:nth-child(even) {
+  background: #ccc;
+}
+
+#chance-home {
+  background: url("../img/ucu_background.jpg") no-repeat center right/cover;
+  height: 35vh;
+  color: #fff;
+}
+#chance-home .header-content {
+  text-align: center;
+}
+#chance-home .header-content h1 {
+  font-size: 4rem;
+  line-height: 1.2;
+}
+
+/* .specialty-form {
+  height: 200px;
+} */
+
+/* Reset Select */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: 0 !important;
+  background: #2c3e50;
+  background-image: none;
+}
+/* Remove IE arrow */
+select::-ms-expand {
+  display: none;
+}
+/* Custom Select */
+.select {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 50px;
+  line-height: 3;
+  margin-right: 2rem;
+  font-weight: bold;
+  background: #2c3e50;
+  overflow: hidden;
+  border-radius: 0.25em;
+}
+select {
+  flex: 1;
+  padding: 0 3em;
+  color: #fff;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+/* Arrow */
+.select::after {
+  content: "\25BC";
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0 1em;
+  background: #34495e;
+  cursor: pointer;
+  pointer-events: none;
+  -webkit-transition: 0.25s all ease;
+  -o-transition: 0.25s all ease;
+  transition: 0.25s all ease;
+}
+/* Transition */
+.select:hover::after {
+  color: #ffbc00;
+}
+
+.form-questions {
+  display: grid;
+  grid-gap: 2rem;
+  grid-template-columns: 5fr 5fr 2fr;
+}
+
+.button-submit {
+  position: relative;
+  display: flex;
+  width: 100%;
+  text-align: center;
+  height: 50px;
+  font-size: 1.5rem;
+  line-height: 3;
+  margin-right: 2rem;
+  background: #ffbc00;
+  overflow: hidden;
+  border-radius: 0.25em;
+  transition: all 0.5s;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border-width: 0;
+}
+
+.button-submit:hover {
+  background-color: #34495e;
+}
+
+.form-questions div h1 {
+  display: block;
+  padding-left: 1rem;
+}
+
+.hidden-heading {
+  visibility: hidden;
+}
+
+.solid-line {
+  height: 3px;
+  background-color: #ccc;
+  margin: 20px;
+}
+
+.personal-info {
+  height: 700px;
+}
+
+.form-questions.even-form {
+  display: grid;
+  grid-gap: 2rem;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.input-submit {
+  position: relative;
+  display: flex;
+  width: 100%;
+  text-align: center;
+  padding-bottom: 5px;
+  height: 50px;
+  font-size: 1.5rem;
+  margin-right: 2rem;
+  background: #ccc;
+  overflow: hidden;
+  border-radius: 0.25em;
+  transition: all 0.5s;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border: 3px solid #666;
+  padding: 0.2rem;
+  box-sizing: border-box;
+}
+
+.some-margin {
+  height: 30px;
+}
