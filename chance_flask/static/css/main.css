@@ -96,6 +96,10 @@ input[class^="btn-"]:hover {
   text-transform: uppercase;
 }
 
+strong {
+  font-weight: 500 !important;
+}
+
 .bottom-line {
   height: 2px;
   width: 3rem;
@@ -371,7 +375,7 @@ select {
 .solid-line {
   height: 3px;
   background-color: #ccc;
-  margin: 20px;
+  margin: 20px 40px;
 }
 
 .personal-info {
@@ -413,4 +417,83 @@ select {
 
 .some-margin {
   height: 30px;
+}
+
+.rating-description {
+  font-size: 2rem;
+  font-weight: 100;
+}
+
+.result-info .container {
+  padding-bottom: 0;
+}
+
+.bottom-line {
+  height: 2px;
+  width: 3rem;
+  background: #ffbc00;
+  display: block;
+  margin: 0 auto 1rem auto;
+}
+
+.result-box {
+  align-self: center;
+  margin: 0 auto;
+  margin-top: 40px;
+  color: #34495e;
+  text-align: center;
+  font-size: 7rem;
+  background: #f4f4f4;
+  box-sizing: border-box;
+  width: 50%;
+  padding: 30px;
+  border: 5px solid #ffbc00;
+  border-radius: 50px;
+  transition: 3s all ease-in-out;
+}
+
+.result-box .result {
+  font-size: 3rem;
+  color: #f4f4f4;
+  transition-property: all;
+  transition-duration: 2s;
+  transition-delay: 1.5s;
+  transition-timing-function: ease-in-out;
+}
+
+.result-info i {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+/* 
+.result-box .questionmark {
+  display: float;
+  margin-top: 30px;
+  font-size: 2rem;
+  color: #ffbc00;
+  text-align: center;
+} */
+
+/* .result-box:hover .questionmark {
+  visibility: hidden;
+} */
+
+.result-box:hover {
+  margin-top: 40px;
+  color: #34495e;
+  text-align: center;
+  font-size: 3rem;
+  background: #ffe8a9;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 30px;
+  border: 5px solid #ffbc00;
+  border-radius: 50px;
+}
+
+.result-box:hover .result {
+  color: #34495e;
 }

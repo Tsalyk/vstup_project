@@ -35,7 +35,7 @@
 
   <div class="solid-line"></div>
 
-  <!-- Form -->
+  <!-- Form section -->
   <section class="specialty-form">
     <div class="form-content container">
       <form action="/ucu_chance" method="POST">
@@ -48,7 +48,9 @@
             <div class="select">
               <select name="slct" id="slct">
                 <option selected disabled></option>
-                <option value="3">Ukrainian Catholic University</option>
+                {% for uni in universities%}
+                <option value="1" href="/{{uni}}">{{uni}}</option>
+                {% endfor %}
               </select>
             </div>
           </div>
@@ -58,17 +60,9 @@
             <div class="select">
               <select name="slct" id="slct">
                 <option selected disabled></option>
-                <option value="1">Computer Science</option>
-                <option value="2">Business Analytics</option>
-                <option value="3">Theology</option>
-                <option value="4">Culturology</option>
-                <option value="5">Philology</option>
-                <option value="6">History</option>
-                <option value="7">Law</option>
-                <option value="8">Ethics Politics</option>
-                <option value="9">Social Work</option>
-                <option value="10">Sociology</option>
-                <option value="11">Psychology</option>
+                {% for specialty in specialties%}
+                <option value="{{specialty}}" href="/{{specialty}}">{{specialty}}</option>
+                {% endfor %}
               </select>
             </div>
           </div>
@@ -77,19 +71,15 @@
         <div class="some-margin"></div>
 
         <div class="even-form">
+          {% for exam in exams%}
           <div>
-            <h1>EXAM 1</h1>
+            <h1>{{exam}}</h1>
             <input type="text" class="input-submit"></input>
           </div>
-          <div>
-            <h1>EXAM 2</h1>
-            <input type="text" class="input-submit"></input>
-          </div>
-          <div>
-            <h1>EXAM 3</h1>
-            <input type="text" class="input-submit"></input>
-          </div>
+          {% endfor %}
         </div>
+
+        <div class="some-margin"></div>
 
         <div class="only-one">
           <!-- Submit -->
@@ -106,33 +96,37 @@
 
   <!-- Info Section -->
   <section id="home-b" class="text-center">
+    <h1 class="section-title">
+      <strong>{{user_specialty}}</strong> at <strong>{{user_university}}</strong>
+    </h1>
+    <div class="bottom-line"></div>
     <div class="stats">
       <div>
         <ul>
           <li><i class="fas fa-users fa-2x"></i></li>
-          <li class="stats-title">First-Year Students</li>
-          <li class="stats-number">400</li>
+          <li class="stats-title">Applicants (2020)</li>
+          <li class="stats-number">{{info[0]}}</li>
         </ul>
       </div>
       <div>
         <ul>
-          <li><i class="fas fa-award fa-2x"></i></li>
-          <li class="stats-title">Specialties</li>
-          <li class="stats-number">11</li>
+          <li><i class="fas fa-user-graduate fa-2x"></i></li>
+          <li class="stats-title">Licensed Amount</li>
+          <li class="stats-number">{{info[1]}}</li>
         </ul>
       </div>
       <div>
         <ul>
-          <li><i class="fas fa-hourglass-start fa-2x"></i></li>
-          <li class="stats-title">Something</li>
-          <li class="stats-number">100</li>
+          <li><i class="fas fa-graduation-cap fa-2x"></i></li>
+          <li class="stats-title">Average Rating Score (2020)</li>
+          <li class="stats-number">{{info[2]}}</li>
         </ul>
       </div>
       <div>
         <ul>
-          <li><i class="fas fa-thumbs-up fa-2x"></i></li>
-          <li class="stats-title">Discounts</li>
-          <li class="stats-number">135</li>
+          <li><i class="fas fa-money-check-alt fa-2x"></i></li>
+          <li class="stats-title">Price</li>
+          <li class="stats-number">{{info[3]}} ₴</li>
         </ul>
       </div>
     </div>
@@ -140,11 +134,23 @@
 
   <div class="solid-line"></div>
 
-  <section class="personal-info">
+  <section class="result-info">
+    <h1 class="section-title">YOUR RATING SCORE IS: <strong>{{user_score}}</strong></h1>
+    <div class="bottom-line"></div>
     <div class="container">
-      <i class="fas fa-chevron-down fa-3x"></i>
+      <p class="rating-description">With your Rating Score of <strong>{{user_score}}</strong>, your chance of entering
+        {{user_specialty}} at
+        {{user_university}} is:
+      </p>
+      <div class="result-box">
+        <h1 class="result">{{user_percentage}}</h1>
+      </div>
+      <i class="fas fa-chevron-up fa-2x"></i>
+      <h1 class="hovertext section-title">Hover to get the result</h1>
     </div>
   </section>
+
+  <div class="solid-line"></div>
 
   <!-- Footer -->
   <footer id="main-footer">

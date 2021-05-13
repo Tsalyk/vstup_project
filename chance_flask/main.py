@@ -21,9 +21,24 @@ def index_page():
 
 
 @app.route("/chance_calculator")
-def country():
+def chance_page():
     """Render chance page with specialty selection"""
-    return render_template("chance.html")
+
+    # Add result from a function instead of hardcode
+    universities = ["Ukrainian Catholic University"]
+    specialties = ["Artes Liberales", "Business Analytics", "Computer Science"]
+    exams = ["MATHEMATICS", "UKRAINIAN", "ENGLISH"]
+    info = [403, 50, 197.66, "75 000"]
+
+    user_university = universities[0]
+    user_specialty = specialties[2]
+    user_score = 197.2
+    user_percentage = "98 %"
+
+
+    return render_template("chance.html", specialties=specialties, \
+        universities=universities, exams=exams, info=info, user_score=user_score, \
+            user_specialty=user_specialty, user_university=user_university, user_percentage=user_percentage)
 
 
 def launch_website():
@@ -31,16 +46,3 @@ def launch_website():
     Function that launches the website.
     """
     app.run(debug=True)
-
-# @app.context_processor
-# def override_url_for():
-#     return dict(url_for=dated_url_for)
-
-# def dated_url_for(endpoint, **values):
-#     if endpoint == 'static':
-#         filename = values.get('filename', None)
-#         if filename:
-#             file_path = os.path.join(app.root_path,
-#                                  endpoint, filename)
-#             values['q'] = int(os.stat(file_path).st_mtime)
-#     return url_for(endpoint, **values)
