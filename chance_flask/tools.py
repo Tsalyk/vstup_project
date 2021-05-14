@@ -55,6 +55,7 @@ class AbitInfoADT:
                         data.append(float(line[line.find(':')+1:].strip()))
                     else:
                         data.append(line)
+        specialties[speciality] = data
         return specialties
 
 
@@ -195,7 +196,7 @@ class AbitInfoADT:
         pass
 
 if __name__ == "__main__":
-    test = AbitInfoADT("data/abiturients.json", "data/coefficients.csv")
+    test = AbitInfoADT("data/abiturients.json", "data/coefficients")
     print(test.get_exams_by_specialty('Богослов’я'))
     test.calculate_rating_grade({"Українська мова та література": 200,
                             "Історія України": 200,
