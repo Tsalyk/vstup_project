@@ -52,7 +52,7 @@ class AbitInfoADT:
                     data = DynamicArray()
                 elif line:
                     if line.find(':') != -1:
-                        data.append(line[line.find(':')+1:].strip())
+                        data.append(float(line[line.find(':')+1:].strip()))
                     else:
                         data.append(line)
         return specialties
