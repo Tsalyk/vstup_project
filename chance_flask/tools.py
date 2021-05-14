@@ -166,9 +166,10 @@ class AbitInfoADT:
         for subject,grade in grades_list.items():
             if subject == 'Середній бал документа про освіту':
                 if grade > 2:
-                    grade = min( grade/0.1 , 100) + 100
+                    grade = min( (grade-2)/0.1 , 100) + 100
                 else:
                     grade = 100
+                print(grade)
             normal = grade * coefficients_list[subject]
             result += normal
         return result
@@ -199,7 +200,7 @@ if __name__ == "__main__":
     test.calculate_rating_grade({"Українська мова та література": 200,
                             "Історія України": 200,
                             "Іноземна мова (На вибір)": 200,
-                            "Середній бал документа про освіту": 12
+                            "Середній бал документа про освіту": 8.9
                             },
                            {'Українська мова та література': 0.35,
                             'Історія України': 0.3,
