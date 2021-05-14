@@ -4,6 +4,7 @@ To start a website you need to run code from this module.
 """
 import os
 from flask import Flask, render_template, request
+# from tools import *
 
 TEMPLATE_DIR = os.path.abspath('./templates/')
 STATIC_DIR = os.path.abspath('./statc/')
@@ -27,7 +28,7 @@ def chance_page():
     # Add result from a function instead of hardcode
     universities = ["Ukrainian Catholic University"]
     specialties = ["Artes Liberales", "Business Analytics", "Computer Science"]
-    exams = ["MATHEMATICS", "UKRAINIAN", "ENGLISH"]
+    exams = ["MATHEMATICS", "UKRAINIAN", "ENGLISH", "GRADE"]
     info = [403, 50, 197.66, "75 000"]
 
     user_university = universities[0]
@@ -38,7 +39,8 @@ def chance_page():
 
     return render_template("chance.html", specialties=specialties, \
         universities=universities, exams=exams, info=info, user_score=user_score, \
-            user_specialty=user_specialty, user_university=user_university, user_percentage=user_percentage)
+        user_specialty=user_specialty, user_university=user_university, 
+        user_percentage=user_percentage)
 
 
 def launch_website():
