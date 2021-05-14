@@ -56,7 +56,7 @@ class AbitInfoADT:
                     else:
                         data.append(line)
         return specialties
-                    
+
 
 
     @staticmethod
