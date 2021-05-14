@@ -1,5 +1,6 @@
 """Tools module"""
 from arrays import Array
+from arrays import DynamicArray
 import json
 
 class AbitInfoADT:
@@ -20,7 +21,7 @@ class AbitInfoADT:
     Можете міняти вигляд того, що приймає функція, але потрібні саме такі ретурни.
     Для функції calculate_chance краще робити допоміжні функції.
     """
-    def __init__(self, info_path: str, applicants_path: str, subjects_path: str):
+    def __init__(self, applicants_path: str, subjects_path: str):
         """
         Initialize ADT
         info_path: Файл з даними про кількість місць на спеціальності, кількість заявок, ціну навчання та середній бал у минулому році.
@@ -28,6 +29,35 @@ class AbitInfoADT:
         subjects_path: Файл з даними про коефіцієнти та потрібні предмети на кожну спеціальність
         """
         self.grades = self.get_grades_from_json(applicants_path)
+        self.specialties = self.get_specialties_info(subjects_path)
+        
+
+    @staticmethod
+    def get_specialties_info(path:str) -> dict:
+        '''
+        Returns a dict with data about specialties.
+        Keys are specialties names and values it are
+        DynamicArray ADT.
+        DynamicArray ADT format:(price,amount,subj,min grade, coef, subj....)
+        '''
+        specialties = {}
+        data = DynamicArray()
+        with open(path, 'r',encoding='UTF-8') as university_data:
+            speciality = university_data.readline()[3:].strip()
+            for line in university_data:
+                line = line.strip()
+                if line and line[0].isdigit():
+                    specialties[speciality] = data
+                    speciality = line[line.find(' '):].strip()
+                    data = DynamicArray()
+                elif line:
+                    if line.find(':') != -1:
+                        data.append(line[line.find(':')+1:].strip())
+                    else:
+                        data.append(line)
+        return specialties
+                    
+
 
     @staticmethod
     def get_grades_from_json(path: str) -> dict:
@@ -50,7 +80,7 @@ class AbitInfoADT:
 
         return data
 
-    def get_specialties_by_university(self, university):
+    def get_specialties_by_university(self, university = None):
         """
         Returns list of specialties from subjects_path 
         with chosen university and specialty.
