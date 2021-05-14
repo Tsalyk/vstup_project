@@ -1,5 +1,6 @@
 """Tools module"""
-
+from arrays import Array
+import json
 
 class AbitInfoADT:
     """
@@ -19,14 +20,35 @@ class AbitInfoADT:
     Можете міняти вигляд того, що приймає функція, але потрібні саме такі ретурни.
     Для функції calculate_chance краще робити допоміжні функції.
     """
-    def __init__(info_path, applicants_path, subjects_path):
+    def __init__(self, info_path: str, applicants_path: str, subjects_path: str):
         """
         Initialize ADT
         info_path: Файл з даними про кількість місць на спеціальності, кількість заявок, ціну навчання та середній бал у минулому році.
         applicants_path: Файл з даними про результати зно вступників на всі спеціальності
         subjects_path: Файл з даними про коефіцієнти та потрібні предмети на кожну спеціальність
         """
-        pass
+        self.grades = self.get_grades_from_json(applicants_path)
+
+    @staticmethod
+    def get_grades_from_json(path: str) -> dict:
+        """
+        Returns a dict with grades, where
+        a key is the name of the speciality;
+        a value consists of 2 Arrays ADT which contain grades (float);
+        first Array - grades those, who entered the university;
+        second Array - grades those, who were rejected
+        """
+        with open(path, 'r') as json_file:
+            data = json.load(json_file)
+
+        for key, value in data.items():
+            entered, rejected = Array(len(value[0])), Array(len(value[1]))
+            for i, j in zip(range(len(value[0])), range(len(value[1]))):
+                entered[i] = value[0][i]
+                rejected[j] = value[1][j]
+            data[key] = entered, rejected
+
+        return data
 
     def get_specialties_by_university(self, university):
         """
@@ -99,4 +121,3 @@ class AbitInfoADT:
         98%
         """
         pass
-
