@@ -196,7 +196,7 @@ class AbitInfoADT:
         pass
 
 if __name__ == "__main__":
-    test = AbitInfoADT("data/abiturients.json", "data/coefficients")
+    test = AbitInfoADT("chance_flask/data/abiturients.json", "chance_flask/data/coefficients")
     print(test.get_exams_by_specialty('Богослов’я'))
     test.calculate_rating_grade({"Українська мова та література": 200,
                             "Історія України": 200,
