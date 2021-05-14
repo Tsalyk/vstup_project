@@ -148,5 +148,5 @@ class DynamicArray:
         '''
         repr_str = '['
         for element in self:
-            repr_str += element + ', '
+            repr_str += str(element) + ', '
         return repr_str[:len(repr_str)-2] + ']'
