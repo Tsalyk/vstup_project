@@ -14,6 +14,24 @@ class Array:
         self._elements = PyArrayType()
         # Initialize each element.
         self.clear(None)
+        # Put min-max values
+        self.minimal = 200
+        self.maximal = 0
+
+    def min(self):
+        """Returns minimal value in the array"""
+        return self.minimal
+
+    def max(self):
+        """Returns maximal value in the array"""
+        return self.maximal
+
+    def average(self):
+        """Returns average value in the array"""
+        sum_elements = 0
+        for element in self:
+            sum_elements += element
+        return round(sum_elements / self._size, 3)
 
     def __len__(self):
         """Returns the size of the array"""

@@ -1,7 +1,7 @@
 """Tools module"""
-from arrays import Array
-from arrays import DynamicArray
+from arrays import Array, DynamicArray
 import json
+
 
 class AbitInfoADT:
     """
@@ -30,7 +30,7 @@ class AbitInfoADT:
         """
         self.grades = self.get_grades_from_json(applicants_path)
         self.specialties = self.get_specialties_info(subjects_path)
-        
+
 
     @staticmethod
     def get_specialties_info(path:str) -> dict:
@@ -58,7 +58,6 @@ class AbitInfoADT:
         return specialties
 
 
-
     @staticmethod
     def get_grades_from_json(path: str) -> dict:
         """
@@ -73,11 +72,11 @@ class AbitInfoADT:
 
         for key, value in data.items():
             entered, rejected = Array(len(value[0])), Array(len(value[1]))
-            for i, j in zip(range(len(value[0])), range(len(value[1]))):
+            for i in range(len(value[0])):
                 entered[i] = value[0][i]
+            for j in range(len(value[1])):
                 rejected[j] = value[1][j]
             data[key] = entered, rejected
-
         return data
 
     def get_specialties_by_university(self, university = None):
