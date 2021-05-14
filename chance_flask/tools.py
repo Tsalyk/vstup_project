@@ -67,7 +67,7 @@ class AbitInfoADT:
         first Array - grades those, who entered the university;
         second Array - grades those, who were rejected
         """
-        with open(path, 'r') as json_file:
+        with open(path, 'r', encoding="UTF-8") as json_file:
             data = json.load(json_file)
 
         for key, value in data.items():
@@ -79,7 +79,7 @@ class AbitInfoADT:
             data[key] = entered, rejected
         return data
 
-    def get_specialties_by_university(self, university = None):
+    def get_university_specialties(self):
         """
         Returns list of specialties from subjects_path 
         with chosen university and specialty.
@@ -87,25 +87,34 @@ class AbitInfoADT:
         e.g.
         ["Artes Liberales", "Business Analytics", "Computer Science", ...]
         """
-        pass
+        return list(self.specialties.keys())
 
-    def get_info_by_specialty(self, university, specialty):
+    def get_info_by_specialty(self, speciality=None):
         """
         Returns list of items from info_path 
         with chosen university and specialty.
 
         Indexes:
-        0: Число поданих заяв 2020 - int/str
-        1: Ліцензований обсяг - int/str
-        2: Середній рейтинговий бал вступників - int/str
+        0: Число поданих заяв 2020 - int
+        1: Ліцензований обсяг - int
+        2: Середній рейтинговий бал вступників - round(float, 2)
         3: Вартість навчання (з пробілом) - str
 
         e.g.
         [403, 50, 197.66, "75 000"]
         """
-        pass
+        specialty_info = self.specialties[speciality]
+        specialty_grades = self.grades[speciality]
+        quantity = 0
+        for i in range(2):
+            quantity += len(specialty_grades[i])
+        speciality_price = str(int(specialty_info[0]))[:-3] + " " + str(int(specialty_info[0]))[-3:]
+        license_quantity = specialty_info[1]
+        average_note = round(sum(specialty_grades[0])/len(specialty_grades[0]),2)
 
-    def get_exams_by_specialty(self, university, specialty):
+        return [quantity, int(license_quantity), average_note, speciality_price]
+
+    def get_exams_by_specialty(self, specialty):
         """
         Returns list of tuples from subjects_path 
         with chosen university and specialty.
@@ -117,19 +126,52 @@ class AbitInfoADT:
         3: Середній бал і коеф - tuple
 
         e.g.
-        [("MATHEMATICS", 0.4), ("UKRAINIAN", 0.2), ("ENGLISH", 0.3), ("GRADE", 0.1)]
+        {'Українська мова та література' : 0.35,
+         'Історія України' : 0.3,
+         'Іноземна мова (На вибір)' : 0.25,
+         'Географія (На вибір)' : 0.25,
+         'Середній бал документа про освіту' : 0.1}
         """
-        pass
+        specialty_info = self.specialties[specialty]
+        result = {}
+        idx = 2
+        while specialty_info[idx] != specialty_info[len(specialty_info)-2]:
+            result[specialty_info[idx]] = specialty_info[idx+2]
+            idx += 3
+        result[specialty_info[len(specialty_info)-2]] = specialty_info[len(specialty_info)-1]
+        return result
+
 
     def calculate_rating_grade(self, grades_list, coefficients_list):
         """
         Return calculated rating grade from a given list of grades and
         coefficients.
+        calculate_rating_grade({"Українська мова та література" : 192.2,
+                                "Історія України" : 199.9,
+                                "Іноземна мова (На вибір)" : 195.7,
+                                "Середній бал документа про освіту" : 11.5
+                                },
+                                {'Українська мова та література' : 0.35,
+                                 'Історія України' : 0.3,
+                                 'Іноземна мова (На вибір)' : 0.25,
+                                 'Географія (На вибір)' : 0.25,
+                                 'Середній бал документа про освіту' : 0.1
+                                 }
+                                )
 
         e.g.
         197.2 - float
         """
-        pass
+        result = 0
+        for subject,grade in grades_list.items():
+            if subject == 'Середній бал документа про освіту':
+                if grade > 2:
+                    grade = min( grade/0.1 , 100) + 100
+                else:
+                    grade = 100
+            normal = grade * coefficients_list[subject]
+            result += normal
+        return result
 
     def calculate_chance(self, rating_grade, university, specialty):
         """
@@ -150,3 +192,19 @@ class AbitInfoADT:
         98%
         """
         pass
+
+if __name__ == "__main__":
+    test = AbitInfoADT("data/abiturients.json", "data/coefficients.csv")
+    print(test.get_exams_by_specialty('Богослов’я'))
+    test.calculate_rating_grade({"Українська мова та література": 200,
+                            "Історія України": 200,
+                            "Іноземна мова (На вибір)": 200,
+                            "Середній бал документа про освіту": 12
+                            },
+                           {'Українська мова та література': 0.35,
+                            'Історія України': 0.3,
+                            'Іноземна мова (На вибір)': 0.25,
+                            'Географія (На вибір)': 0.25,
+                            'Середній бал документа про освіту': 0.1
+                            }
+                           )
