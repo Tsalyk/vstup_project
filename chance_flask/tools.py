@@ -216,10 +216,31 @@ class AbitInfoADT:
             *. симулювати рандомні значення з визначених проміжків 10 000 раз та вивести відсоток тих,
                 в яких rating_grade було достатньо.
 
+        calculate_chance( 199.2, "ucu", "Системний аналіз")
         e.g.
         98%
         """
-        pass
+        abiturients_2020 = self.grades[specialty]
+        abiturients_2019 = self.get_grades_from_json(f"data/abiturients_{university}_2020.json")[specialty]
+
+        max_grade_2020,min_grade_2020 = max(abiturients_2020[0]), min(abiturients_2020[0])
+        max_grade_2019,min_grade_2019 = max(abiturients_2019[0]), min(abiturients_2019[0])
+
+        def find_refused_quantity(abiturients_year, min_grade_year):
+            refused_quantity_year = 0
+            for person in abiturients_year[1]:
+                if person > min_grade_year:
+                    refused_quantity_year += 1
+            return refused_quantity_year
+
+        refused_quantity_2020 = find_refused_quantity(abiturients_2020, min_grade_2020)
+        refused_quantity_2019 = find_refused_quantity(abiturients_2019, min_grade_2019)
+
+        average_grade_2019 = abiturients_2019[0].average()
+        average_grade_2020 = abiturients_2020[0].average()
+
+
+
 
 ABIT = AbitInfoADT("chance_flask/data/abiturients.json", "chance_flask/data/coefficients")
 
