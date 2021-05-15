@@ -420,6 +420,7 @@ select {
 }
 
 .rating-description {
+  text-align: center;
   font-size: 2rem;
   font-weight: 100;
 }
