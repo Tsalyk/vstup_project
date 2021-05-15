@@ -21,15 +21,17 @@ class AbitInfoADT:
     Можете міняти вигляд того, що приймає функція, але потрібні саме такі ретурни.
     Для функції calculate_chance краще робити допоміжні функції.
     """
-    def __init__(self, applicants_path: str, subjects_path: str):
+    def __init__(self, applicants_2019_path: str, applicants_2020_path: str, subjects_path: str):
         """
         Initialize ADT
         info_path: Файл з даними про кількість місць на спеціальності, кількість заявок, ціну навчання та середній бал у минулому році.
         applicants_path: Файл з даними про результати зно вступників на всі спеціальності
         subjects_path: Файл з даними про коефіцієнти та потрібні предмети на кожну спеціальність
         """
-        self.grades = self.get_grades_from_json(applicants_path)
+        self.grades = self.get_grades_from_json(applicants_2020_path)
+        self.grades_2019 = self.get_grades_from_json(applicants_2020_path)
         self.specialties = self.get_specialties_info(subjects_path)
+
 
 
     @staticmethod
@@ -224,7 +226,7 @@ class AbitInfoADT:
         98%
         """
         abiturients_2020 = self.grades[specialty]
-        abiturients_2019 = self.get_grades_from_json("data/abiturients.json")[specialty] #f"data/abiturients_{university}_2020.json")[specialty]
+        abiturients_2019 = self.grades_2019[specialty]
 
         max_grade_2020,min_grade_2020 = max(abiturients_2020[0]), min(abiturients_2020[0])
         max_grade_2019,min_grade_2019 = max(abiturients_2019[0]), min(abiturients_2019[0])
