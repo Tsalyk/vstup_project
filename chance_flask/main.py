@@ -59,8 +59,8 @@ def calc():
         user_grades = [grade_1, grade_2, grade_3, grade_4]
         print(user_grades)
 
-        user_score = ABIT.calculate_rating_grade(user_grades, exams)
-        user_chance = ABIT.calculate_chance(user_score, user_specialty)
+        user_score = round(ABIT.calculate_rating_grade(user_grades, exams), 2)
+        user_percentage = ABIT.calculate_chance(user_score, user_specialty)
 
     return render_template("specialty.html", user_university=user_university, user_grades=user_grades, 
     user_specialty=user_specialty, exams=exams_list, info=info, user_score=user_score, user_percentage=user_percentage)
