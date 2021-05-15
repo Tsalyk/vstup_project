@@ -203,6 +203,7 @@ class AbitInfoADT:
             result += normal
         return result
 
+
     def calculate_chance(self, rating_grade, university, specialty):
         """
         Return chance of entering specialty at university
@@ -223,20 +224,22 @@ class AbitInfoADT:
         98%
         """
         abiturients_2020 = self.grades[specialty]
-        abiturients_2019 = self.get_grades_from_json(f"data/abiturients_{university}_2020.json")[specialty]
+        abiturients_2019 = self.get_grades_from_json("data/abiturients.json")[specialty] #f"data/abiturients_{university}_2020.json")[specialty]
 
         max_grade_2020,min_grade_2020 = max(abiturients_2020[0]), min(abiturients_2020[0])
         max_grade_2019,min_grade_2019 = max(abiturients_2019[0]), min(abiturients_2019[0])
 
         def find_refused_quantity(abiturients_year, min_grade_year):
             refused_quantity_year = 0
+            refused_persons = []
             for person in abiturients_year[1]:
                 if person > min_grade_year:
                     refused_quantity_year += 1
-            return refused_quantity_year
+                    refused_persons.append(person)
+            return refused_quantity_year, max(refused_persons), min(refused_persons)
 
-        refused_quantity_2020 = find_refused_quantity(abiturients_2020, min_grade_2020)
-        refused_quantity_2019 = find_refused_quantity(abiturients_2019, min_grade_2019)
+        refused_quantity_2020, max_refused_grade_2020, min_refused_grade_2020 = find_refused_quantity(abiturients_2020, min_grade_2020)
+        refused_quantity_2019, max_refused_grade_2019, min_refused_grade_2019 = find_refused_quantity(abiturients_2019, min_grade_2019)
 
         average_grade_2019 = abiturients_2019[0].average()
         average_grade_2020 = abiturients_2020[0].average()
