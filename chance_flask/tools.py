@@ -232,7 +232,10 @@ class AbitInfoADT:
         license_quantity = self.get_info_by_specialty(specialty)[1]
 
         abiturients_2020 = self.grades[specialty]
-        abiturients_2019 = self.grades_2019[specialty]
+        try:
+            abiturients_2019 = self.grades_2019[specialty]
+        except KeyError:
+            abiturients_2019 = abiturients_2020
 
         all_applications_2020 = sorted(list(abiturients_2020[0]) + list(abiturients_2020[1]))[::-1]
         all_applications_2019 = sorted(list(abiturients_2019[0]) + list(abiturients_2019[1]))[::-1]
@@ -294,8 +297,8 @@ ABIT = AbitInfoADT("chance_flask/data/abiturients_ucu_2019.json",
 
 if __name__ == "__main__":
     test = AbitInfoADT("chance_flask/data/abiturients_ucu_2019.json",
-                    "chance_flask/data/abiturients_ucu_2020.json",
-                    "chance_flask/data/coefficients")
+                   "chance_flask/data/abiturients_ucu_2020.json",
+                   "chance_flask/data/coefficients")
     print(test.get_exams_by_specialty("Богослов'я"))
     grade = test.calculate_rating_grade([180, 180, 180, 10],
                            {'Українська мова та література': 0.35,
@@ -305,4 +308,4 @@ if __name__ == "__main__":
                             }
                            )
     print([key for key in test.grades_2019.keys()])
-    print(test.calculate_chance(180,"Комп'ютерні науки"))
+    print(test.calculate_chance(180,"Право"))
