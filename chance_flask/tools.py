@@ -1,5 +1,5 @@
 """Tools module"""
-from arrays import Array, DynamicArray
+from chance_flask.arrays import Array, DynamicArray
 import json
 
 

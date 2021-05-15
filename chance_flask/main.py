@@ -4,7 +4,7 @@ To start a website you need to run code from this module.
 """
 import os
 from flask import Flask, render_template, request
-# from tools import *
+from chance_flask.tools import *
 
 TEMPLATE_DIR = os.path.abspath('./templates/')
 STATIC_DIR = os.path.abspath('./statc/')
