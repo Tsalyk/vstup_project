@@ -211,7 +211,7 @@ class AbitInfoADT:
         return min(result * 1.02, 200)
 
 
-    def calculate_chance(self, rating_grade, university, specialty):
+    def calculate_chance(self, rating_grade,specialty):
         """
         Return chance of entering specialty at university
         with a given rating grade from applicants_path.
@@ -305,4 +305,4 @@ if __name__ == "__main__":
                             }
                            )
     print([key for key in test.grades_2019.keys()])
-    print(test.calculate_chance(180,"ucu","Комп'ютерні науки"))
+    print(test.calculate_chance(180,"Комп'ютерні науки"))
