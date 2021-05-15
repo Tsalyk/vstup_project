@@ -249,20 +249,19 @@ class AbitInfoADT:
 
 
 
-ABIT = AbitInfoADT("chance_flask/data/abiturients.json", "chance_flask/data/coefficients")
+ABIT = AbitInfoADT("chance_flask/data/abiturients_ucu_2019.json",
+                   "chance_flask/data/abiturients_ucu_2020.json",
+                   "chance_flask/data/coefficients")
 
 if __name__ == "__main__":
-    test = AbitInfoADT("chance_flask/data/abiturients.json", "chance_flask/data/coefficients")
+    test = AbitInfoADT("chance_flask/data/abiturients_ucu_2019.json",
+                       "chance_flask/data/abiturients_ucu_2020.json",
+                       "chance_flask/data/coefficients")
     print(test.get_exams_by_specialty('Богослов’я'))
-    test.calculate_rating_grade({"Українська мова та література": 200,
-                            "Історія України": 200,
-                            "Іноземна мова (На вибір)": 200,
-                            "Середній бал документа про освіту": 8.9
-                            },
+    test.calculate_rating_grade([200, 200, 200, 8.9],
                            {'Українська мова та література': 0.35,
                             'Історія України': 0.3,
-                            'Іноземна мова (На вибір)': 0.25,
-                            'Географія (На вибір)': 0.25,
+                            'Географія': 0.25,
                             'Середній бал документа про освіту': 0.1
                             }
                            )
