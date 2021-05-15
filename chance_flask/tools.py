@@ -1,6 +1,8 @@
 """Tools module"""
 from arrays import Array, DynamicArray
 import json
+import random
+import copy
 
 
 class AbitInfoADT:
@@ -110,6 +112,7 @@ class AbitInfoADT:
         """
         if not speciality:
             return ["?", "?", "?", "?"]
+        print(list(self.specialties.keys()))
         specialty_info = self.specialties[speciality]
         specialty_grades = self.grades[speciality]
         quantity = 0
@@ -208,11 +211,10 @@ class AbitInfoADT:
         return min(result * 1.02, 200)
 
 
-    def calculate_chance(self, rating_grade, university, specialty):
+    def calculate_chance(self, rating_grade,specialty):
         """
         Return chance of entering specialty at university
         with a given rating grade from applicants_path.
-
         Method:
         1. Зчитати дані по спеціальності по різних роках.
         2. Порахувати в яких межах варіюється кількість тих, хто міг пройти, але відмовився.
@@ -222,13 +224,31 @@ class AbitInfoADT:
         6. Якщо rating_grade входить в проміжок, то:
             *. симулювати рандомні значення з визначених проміжків 10 000 раз та вивести відсоток тих,
                 в яких rating_grade було достатньо.
-
         calculate_chance( 199.2, "ucu", "Системний аналіз")
         e.g.
         98%
+        якщо нище ліцензійної к-сті + лівнувші * 1.2 - 0%
         """
+        license_quantity = self.get_info_by_specialty(specialty)[1]
+
         abiturients_2020 = self.grades[specialty]
         abiturients_2019 = self.grades_2019[specialty]
+
+        all_applications_2020 = sorted(list(abiturients_2020[0]) + list(abiturients_2020[1]))[::-1]
+        all_applications_2019 = sorted(list(abiturients_2019[0]) + list(abiturients_2019[1]))[::-1]
+
+        def check_on_100_percent(all_applications_year, grade, license_quantity_speciality):
+            chance_year = False
+            for i in range(license_quantity_speciality):
+                if rating_grade > all_applications_year[i]:
+                    return True
+            return False
+
+        chance_2020 = check_on_100_percent(all_applications_2020,rating_grade,license_quantity)
+        chance_2019 = check_on_100_percent(all_applications_2019,rating_grade,license_quantity)
+
+        if chance_2019 and chance_2020:
+            return "100 %"
 
         max_grade_2020,min_grade_2020 = max(abiturients_2020[0]), min(abiturients_2020[0])
         max_grade_2019,min_grade_2019 = max(abiturients_2019[0]), min(abiturients_2019[0])
@@ -240,16 +260,33 @@ class AbitInfoADT:
                 if person > min_grade_year:
                     refused_quantity_year += 1
                     refused_persons.append(person)
-            return refused_quantity_year, max(refused_persons), min(refused_persons)
+            return refused_quantity_year, max(refused_persons), min(refused_persons), refused_persons
 
-        refused_quantity_2020, max_refused_grade_2020, min_refused_grade_2020 = find_refused_quantity(abiturients_2020, min_grade_2020)
-        refused_quantity_2019, max_refused_grade_2019, min_refused_grade_2019 = find_refused_quantity(abiturients_2019, min_grade_2019)
+        refused_quantity_2020, max_refused_grade_2020, min_refused_grade_2020, refused_persons_2020 = find_refused_quantity(abiturients_2020, min_grade_2020)
+        refused_quantity_2019, max_refused_grade_2019, min_refused_grade_2019,refused_persons_2019 = find_refused_quantity(abiturients_2019, min_grade_2019)
 
-        average_grade_2019 = abiturients_2019[0].average()
-        average_grade_2020 = abiturients_2020[0].average()
+        def generate_year(all_applications_year, refused_quantity_2020, refused_quantity_2019, student_grade, license_quantity):
+            all_applications_year = copy.deepcopy(all_applications_year)
+            min_quantity = min(refused_quantity_2019,refused_quantity_2020) - 5
+            max_quantity = max(refused_quantity_2020,refused_quantity_2019) + 5
+            year_refuse_quantity = random.randint(min_quantity, max_quantity)
+            for _ in range(year_refuse_quantity):
+                first_50_people = all_applications_year[:license_quantity]
+                refused_person = random.choice(first_50_people)
+                all_applications_year.remove(refused_person)
+                if student_grade > all_applications_year[min(license_quantity,len(all_applications_year)-1)]:
+                    return True
+            return False
 
-
-
+        successfuel_attemp = 0
+        for _ in range(10000):
+            if generate_year(all_applications_2020,refused_quantity_2020,refused_quantity_2019,rating_grade,license_quantity):
+                successfuel_attemp += 1
+        chance = successfuel_attemp/10000 * 100
+        if chance != int(chance):
+            return f"{ round(chance,2)} %"
+        else:
+            return f"{int(chance)} %"
 
 ABIT = AbitInfoADT("chance_flask/data/abiturients_ucu_2019.json",
                    "chance_flask/data/abiturients_ucu_2020.json",
@@ -257,9 +294,9 @@ ABIT = AbitInfoADT("chance_flask/data/abiturients_ucu_2019.json",
 
 if __name__ == "__main__":
     test = AbitInfoADT("chance_flask/data/abiturients_ucu_2019.json",
-                       "chance_flask/data/abiturients_ucu_2020.json",
-                       "chance_flask/data/coefficients")
-    print(test.get_exams_by_specialty('Богослов’я'))
+                    "chance_flask/data/abiturients_ucu_2020.json",
+                    "chance_flask/data/coefficients")
+    print(test.get_exams_by_specialty("Богослов'я"))
     grade = test.calculate_rating_grade([180, 180, 180, 10],
                            {'Українська мова та література': 0.35,
                             'Історія України': 0.3,
@@ -267,4 +304,5 @@ if __name__ == "__main__":
                             'Середній бал документа про освіту': 0.1
                             }
                            )
-    print(test.grades_2019['Системний аналіз'])
+    print([key for key in test.grades_2019.keys()])
+    print(test.calculate_chance(180,"Комп'ютерні науки"))
