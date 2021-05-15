@@ -69,7 +69,7 @@ Then if you press button "Search" and scroll down, you will see some info about 
 ***
 ### Credits
 * Taras Onyshkiv, UCU(Ukrainian Catholic University)
-* Markiyan Tsalyk, UCU(Ukrainian Catholic University)
-* Severyn Peleshko, UCU(Ukrainian Catholic University)
+* Mykhailo-Markiian Tsalyk, UCU(Ukrainian Catholic University)
+* Severyn-Dmytro Peleshko, UCU(Ukrainian Catholic University)
 * Tymofii Kozak, UCU(Ukrainian Catholic University)
 * Oksana Sadova, UCU(Ukrainian Catholic University)
