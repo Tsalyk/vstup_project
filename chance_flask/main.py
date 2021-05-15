@@ -4,7 +4,7 @@ To start a website you need to run code from this module.
 """
 import os
 from flask import Flask, render_template, request
-from chance_flask.tools import *
+from tools import *
 
 TEMPLATE_DIR = os.path.abspath('./templates/')
 STATIC_DIR = os.path.abspath('./statc/')
@@ -21,19 +21,30 @@ def index_page():
     return render_template("index.html")
 
 
-@app.route("/chance_calculator")
+@app.route("/chance_calculator", methods=['GET', 'POST'])
 def chance_page():
     """Render chance page with specialty selection"""
 
     # Add result from a function instead of hardcode
-    universities = ["Ukrainian Catholic University"]
-    specialties = ["Artes Liberales", "Business Analytics", "Computer Science"]
-    exams = ["MATHEMATICS", "UKRAINIAN", "ENGLISH", "GRADE"]
-    info = [403, 50, 197.66, "75 000"]
+    universities = ["Український Католицький Університет"]
+    specialties = ABIT.get_university_specialties()
+    user_specialty = ""
+    user_grades = [0, 0, 0, 0]
+
+    if request.method == 'POST':
+        user_specialty = request.form.get('specialty')
+        grade_1 = request.form.get('grade')
+        grade_2 = request.form.get('grade')
+        grade_3 = request.form.get('grade')
+        grade_4 = request.form.get('grade')
+        user_grade = []
+
+    exams = ABIT.get_exams_by_specialty(user_specialty)
+    info = ABIT.get_info_by_specialty(user_specialty)
 
     user_university = universities[0]
     user_specialty = specialties[2]
-    user_score = 197.2
+    user_score = ABIT.calculate_rating_grade(list(exams.values()))
     user_percentage = "98 %"
 
 
@@ -48,3 +59,7 @@ def launch_website():
     Function that launches the website.
     """
     app.run(debug=True)
+
+
+if __name__ == '__main__':
+    launch_website()

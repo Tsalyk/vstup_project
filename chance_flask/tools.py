@@ -1,5 +1,5 @@
 """Tools module"""
-from chance_flask.arrays import Array, DynamicArray
+from arrays import Array, DynamicArray
 import json
 
 
@@ -104,6 +104,8 @@ class AbitInfoADT:
         e.g.
         [403, 50, 197.66, "75 000"]
         """
+        if not speciality:
+            return ["?", "?", "?", "?"]
         specialty_info = self.specialties[speciality]
         specialty_grades = self.grades[speciality]
         quantity = 0
@@ -133,6 +135,11 @@ class AbitInfoADT:
          'Географія (На вибір)' : 0.25,
          'Середній бал документа про освіту' : 0.1}
         """
+        if not specialty:
+            return {'EXAM 1' : 0.5,
+         'EXAM 2' : 0.25,
+         'EXAM 3' : 0.25,
+         'GRADE' : 0.1}
         specialty_info = self.specialties[specialty]
         result = {}
         idx = 2
@@ -194,6 +201,8 @@ class AbitInfoADT:
         98%
         """
         pass
+
+ABIT = AbitInfoADT("chance_flask/data/abiturients.json", "chance_flask/data/coefficients")
 
 if __name__ == "__main__":
     test = AbitInfoADT("chance_flask/data/abiturients.json", "chance_flask/data/coefficients")

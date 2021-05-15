@@ -38,15 +38,14 @@
   <!-- Form section -->
   <section class="specialty-form">
     <div class="form-content container">
-      <form action="/ucu_chance" method="POST">
-
+      <form action="/chance_calculator" method="POST">
 
         <div class="form-questions">
           <!-- University Select -->
           <div>
             <h1>UNIVERSITY</h1>
             <div class="select">
-              <select name="slct" id="slct">
+              <select name="university" id="slct">
                 <option selected disabled></option>
                 {% for uni in universities%}
                 <option value="1" href="/{{uni}}">{{uni}}</option>
@@ -58,7 +57,7 @@
           <div>
             <h1>SPECIALTY</h1>
             <div class="select">
-              <select name="slct" id="slct">
+              <select name="specialty" id="slct">
                 <option selected disabled></option>
                 {% for specialty in specialties%}
                 <option value="{{specialty}}" href="/{{specialty}}">{{specialty}}</option>
