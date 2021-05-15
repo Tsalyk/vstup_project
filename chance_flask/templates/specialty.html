@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/ec2f8f4143.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200;300;400;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
+  <title>Calculate Chance</title>
+</head>
+
+<body>
+
+  <header id="chance-home">
+    <div class="container">
+      <nav id="main-nav">
+        <img src="{{ url_for('static',filename='img/logo.png') }}" alt="LOGO" id="logo">
+        <ul>
+          <li><a href="ucu_chance">Home</a></li>
+          <li><a href="chance_calculator" class="current">Calculate</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-content">
+        <h1>Chance Calculator <span class="txt-type" data-weight="3000"
+            data-words='["Computer Science ", "Business Analytics ", "Artes Liberales ", "Theology ", "Law ", "Ethics Politics ", "Social Work "]'></span>
+        </h1>
+      </div>
+    </div>
+  </header>
+
+  <div class="solid-line"></div>
+
+  <!-- Info Section -->
+  <section id="home-b" class="text-center">
+    <h1 class="section-title">
+      <strong>{{user_specialty}}</strong> at <strong>{{user_university}}</strong>
+    </h1>
+    <div class="bottom-line"></div>
+    <div class="stats">
+      <div>
+        <ul>
+          <li><i class="fas fa-users fa-2x"></i></li>
+          <li class="stats-title">Applicants (2020)</li>
+          <li class="stats-number">{{info[0]}}</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><i class="fas fa-user-graduate fa-2x"></i></li>
+          <li class="stats-title">Licensed Amount</li>
+          <li class="stats-number">{{info[1]}}</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><i class="fas fa-graduation-cap fa-2x"></i></li>
+          <li class="stats-title">Average Rating Score (2020)</li>
+          <li class="stats-number">{{info[2]}}</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><i class="fas fa-money-check-alt fa-2x"></i></li>
+          <li class="stats-title">Price</li>
+          <li class="stats-number">{{info[3]}} ₴</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="solid-line"></div>
+
+  <!-- Form section -->
+  <section class="specialty-form">
+    <div class="form-content container">
+      <form action="/chance_calculator" method="POST">
+
+        <div class="form-questions">
+
+          <div class="even-form">
+            <div>
+              <h1>{{exams[0]}}</h1>
+              <input type="text" class="input-submit" name="{{exams[0]}}"></input>
+            </div>
+            <div>
+              <h1>{{exams[1]}}</h1>
+              <input type="text" class="input-submit" name="{{exams[1]}}"></input>
+            </div>
+            <div>
+              <h1>{{exams[2]}}</h1>
+              <input type="text" class="input-submit" name="{{exams[2]}}"></input>
+            </div>
+            <div>
+              <h1>{{exams[3]}}</h1>
+              <input type="text" class="input-submit" name="{{exams[3]}}"></input>
+            </div>
+          </div>
+
+          <div class="some-margin"></div>
+
+          <div class="only-one">
+            <!-- Submit -->
+            <div></div>
+            <h1 class="hidden-heading">SEARCH</h1>
+            <button type="submit" class="button-submit">SEARCH</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <div class="solid-line"></div>
+
+  <section class="result-info">
+    <h1 class="section-title">YOUR RATING SCORE IS: <strong>{{user_score}}</strong></h1>
+    <div class="bottom-line"></div>
+    <div class="container">
+      <p class="rating-description">With your Rating Score of <strong>{{user_score}}</strong>, your chance of entering
+        {{user_specialty}} at
+        {{user_university}} is:
+      </p>
+      <div class="result-box">
+        <h1 class="result">{{user_percentage}}</h1>
+      </div>
+      <i class="fas fa-chevron-up fa-2x"></i>
+      <h1 class="hovertext section-title">Hover to get the result</h1>
+    </div>
+  </section>
+
+  <div class="solid-line"></div>
+
+  <!-- Footer -->
+  <footer id="main-footer">
+    <div class="footer-content container">
+      <p>Copyright &copy; 2021. All Rights Reserved</p>
+      <div class="social">
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Tim Kozak</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Taras Onyshkiv</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Markiian Tsalyk</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Severyn Peleshko</p>
+        </div>
+        <div class="credential">
+          <a href=""><i class="fab fa-linkedin"></i></a>
+          <p>Oksana Sadova</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/select.js"></script>
+</body>
+
+</html>
