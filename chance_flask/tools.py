@@ -225,8 +225,26 @@ class AbitInfoADT:
         e.g.
         98%
         """
+        license_quantity = self.get_info_by_specialty(specialty)[1]
+
         abiturients_2020 = self.grades[specialty]
         abiturients_2019 = self.grades_2019[specialty]
+
+        all_applications_2020 = sorted(list(abiturients_2020[0]) + list(abiturients_2020[1]))[::-1]
+        all_applications_2019 = sorted(list(abiturients_2019[0]) + list(abiturients_2019[1]))[::-1]
+
+        chance_2020 = False
+        chance_2019 = False
+        print(all_applications_2020[53])
+        print(all_applications_2019[53])
+
+        for i in range(license_quantity):
+            if rating_grade > all_applications_2020[i]:
+                chance_2020 = True
+            if rating_grade > all_applications_2019[i]:
+                chance_2019 = True
+        if chance_2019 and chance_2020:
+            return "99.9%"
 
         max_grade_2020,min_grade_2020 = max(abiturients_2020[0]), min(abiturients_2020[0])
         max_grade_2019,min_grade_2019 = max(abiturients_2019[0]), min(abiturients_2019[0])
@@ -249,19 +267,20 @@ class AbitInfoADT:
 
 
 
-ABIT = AbitInfoADT("chance_flask/data/abiturients_ucu_2019.json",
-                   "chance_flask/data/abiturients_ucu_2020.json",
-                   "chance_flask/data/coefficients")
+# ABIT = AbitInfoADT("chance_flask/data/abiturients_ucu_2019.json",
+#                    "chance_flask/data/abiturients_ucu_2020.json",
+#                    "chance_flask/data/coefficients")
 
 if __name__ == "__main__":
-    test = AbitInfoADT("chance_flask/data/abiturients_ucu_2019.json",
-                       "chance_flask/data/abiturients_ucu_2020.json",
-                       "chance_flask/data/coefficients")
-    print(test.get_exams_by_specialty('Богослов’я'))
-    test.calculate_rating_grade([200, 200, 200, 8.9],
-                           {'Українська мова та література': 0.35,
-                            'Історія України': 0.3,
-                            'Географія': 0.25,
-                            'Середній бал документа про освіту': 0.1
-                            }
-                           )
+    test = AbitInfoADT("data/abiturients_ucu_2019.json",
+                       "data/abiturients_ucu_2020.json",
+                       "data/coefficients")
+    # print(test.get_exams_by_specialty('Богослов’я'))
+    # print(test.calculate_rating_grade([197, 197, 183, 11.5],
+    #                        {'Українська мова та література': 0.35,
+    #                         'Історія України': 0.25,
+    #                         'Географія': 0.3,
+    #                         'Середній бал документа про освіту': 0.1
+    #                         }
+    #                        ))
+    print(test.calculate_chance(170,"ucu","Богослов’я"))
