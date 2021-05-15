@@ -25,7 +25,6 @@ def index_page():
 def chance_page():
     """Render chance page with specialty selection"""
 
-    # Add result from a function instead of hardcode
     universities = ["Український Католицький Університет"]
     specialties = ABIT.get_university_specialties()
     user_specialty = ""
@@ -33,18 +32,22 @@ def chance_page():
 
     if request.method == 'POST':
         user_specialty = request.form.get('specialty')
-        grade_1 = request.form.get('grade')
-        grade_2 = request.form.get('grade')
-        grade_3 = request.form.get('grade')
-        grade_4 = request.form.get('grade')
-        user_grades = [grade_1, grade_2, grade_3, grade_4]
+        # exams = list(ABIT.get_exams_by_specialty(user_specialty).keys())
+        # grade_1 = request.form.get('grade')
+        # grade_2 = request.form.get('grade')
+        # grade_3 = request.form.get('grade')
+        # grade_4 = request.form.get('grade')
+
+        # user_grades = [grade_1, grade_2, grade_3, grade_4]
+        # print(user_grades)
 
     exams = ABIT.get_exams_by_specialty(user_specialty)
     info = ABIT.get_info_by_specialty(user_specialty)
 
+
     user_university = universities[0]
-    user_specialty = specialties[2]
-    user_score = ABIT.calculate_rating_grade(user_grades, exams)
+    # user_score = ABIT.calculate_rating_grade(user_grades, exams)
+    user_score = 100
     user_percentage = "98 %"
 
 

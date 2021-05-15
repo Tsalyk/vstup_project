@@ -144,6 +144,7 @@ class AbitInfoADT:
         result = {}
         idx = 2
         third_zno = ""
+        third_zno_coef = 0
         while specialty_info[idx] != specialty_info[len(specialty_info)-2]:
             if "На вибір" in specialty_info[idx]:
                 if third_zno == "":
@@ -154,7 +155,8 @@ class AbitInfoADT:
             else:
                 result[specialty_info[idx]] = specialty_info[idx+2]
             idx += 3
-        result[third_zno] = third_zno_coef
+        if third_zno_coef != 0:
+            result[third_zno] = third_zno_coef
         result[specialty_info[len(specialty_info)-2]] = specialty_info[len(specialty_info)-1]
         return result
 
