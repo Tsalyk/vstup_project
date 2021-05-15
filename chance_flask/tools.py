@@ -193,7 +193,6 @@ class AbitInfoADT:
             grades_dict[exam] = grades_list[i]
             i += 1
 
-        print(grades_dict)
         result = 0
         for subject,grade in grades_dict.items():
             try:
@@ -202,10 +201,11 @@ class AbitInfoADT:
                 grade = 0
                 print(grade)
             if subject == 'Середній бал документа про освіту':
-                if grade > 2:
-                    grade = min( (grade-2)/0.1 , 100) + 100
-                else:
-                    grade = 100
+                if grade < 12:
+                    if grade > 2:
+                        grade = min( (grade-2)/0.1 , 100) + 100
+                    else:
+                        grade = 100
             normal = grade * coefficients_dict[subject]
             result += normal
         return min(result * 1.02, 200)
