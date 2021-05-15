@@ -42,7 +42,7 @@
 
         <div class="form-questions">
           <!-- University Select -->
-          <div>
+          <!-- <div>
             <h1>UNIVERSITY</h1>
             <div class="select">
               <select name="university" id="slct">
@@ -52,30 +52,48 @@
                 {% endfor %}
               </select>
             </div>
-          </div>
+          </div> -->
           <!-- Specialty Select -->
           <div>
             <h1>SPECIALTY</h1>
             <div class="select">
               <select name="specialty" id="slct">
-                <option selected disabled></option>
+                <option selected disabled>{{specialty}}</option>
                 {% for specialty in specialties%}
                 <option value="{{specialty}}" href="/{{specialty}}">{{specialty}}</option>
                 {% endfor %}
               </select>
             </div>
           </div>
+
+          <!-- Submit -->
+          <div>
+            <h1 class="hidden-heading">SEARCH</h1>
+            <button type="submit" class="button-submit">SEARCH</button>
+          </div>
+
         </div>
+
 
         <div class="some-margin"></div>
 
         <div class="even-form">
-          {% for exam in exams%}
           <div>
-            <h1>{{exam}}</h1>
-            <input type="text" class="input-submit" name="grade"></input>
+            <h1>{{exams[0]}}</h1>
+            <input type="text" class="input-submit" name="{{exams[0]}}"></input>
           </div>
-          {% endfor %}
+          <div>
+            <h1>{{exams[1]}}</h1>
+            <input type="text" class="input-submit" name="{{exams[1]}}"></input>
+          </div>
+          <div>
+            <h1>{{exams[2]}}</h1>
+            <input type="text" class="input-submit" name="{{exams[2]}}"></input>
+          </div>
+          <div>
+            <h1>{{exams[3]}}</h1>
+            <input type="text" class="input-submit" name="{{exams[3]}}"></input>
+          </div>
         </div>
 
         <div class="some-margin"></div>

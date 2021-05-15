@@ -32,16 +32,22 @@ def chance_page():
 
     if request.method == 'POST':
         user_specialty = request.form.get('specialty')
-        # exams = list(ABIT.get_exams_by_specialty(user_specialty).keys())
-        # grade_1 = request.form.get('grade')
-        # grade_2 = request.form.get('grade')
-        # grade_3 = request.form.get('grade')
-        # grade_4 = request.form.get('grade')
-
-        # user_grades = [grade_1, grade_2, grade_3, grade_4]
-        # print(user_grades)
 
     exams = ABIT.get_exams_by_specialty(user_specialty)
+    info = ABIT.get_info_by_specialty(user_specialty)
+
+    if request.method == 'POST':
+        exams = list(ABIT.get_exams_by_specialty(user_specialty).keys())
+        grade_1 = request.form.get(exams[0])
+        grade_2 = request.form.get(exams[1])
+        grade_3 = request.form.get(exams[2])
+        grade_4 = request.form.get(exams[3])
+
+        user_grades = [grade_1, grade_2, grade_3, grade_4]
+        print(user_grades)
+
+    exams_dict = ABIT.get_exams_by_specialty(user_specialty)
+    exams = list(exams_dict.keys())
     info = ABIT.get_info_by_specialty(user_specialty)
 
 
