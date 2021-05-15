@@ -33,50 +33,37 @@ def chance_page():
 
     return render_template("chance.html", specialties=specialties)
 
-@app.route("/calc")
+@app.route("/calc", methods=['GET', 'POST'])
 def calc():
     """
     Generates a webpage with count of books and information
     table about all books for every given language.
     """
-    universities = ["Український Католицький Університет"]
-    specialties = ABIT.get_university_specialties()
-    user_specialty = ""
-    user_grades = ['', '', '', '']
-    user_score = 0
-    user_university = universities[0]
-    user_percentage = "98 %"
+    user_university = "Український Католицький Університет"
     user_specialty = request.args.get('user_specialty')
 
-    exams = ABIT.get_exams_by_specialty(user_specialty)
     info = ABIT.get_info_by_specialty(user_specialty)
+    exams = ABIT.get_exams_by_specialty(user_specialty)
+    exams_list = list(exams.keys())
+
+    user_grades = ['', '', '', '']
+    user_score = 0
+    user_percentage = "?"
 
     if request.method == 'POST':
-        exams = list(ABIT.get_exams_by_specialty(user_specialty).keys())
-        grade_1 = request.form.get(exams[0])
-        grade_2 = request.form.get(exams[1])
-        grade_3 = request.form.get(exams[2])
-        grade_4 = request.form.get(exams[3])
+        grade_1 = request.form.get(exams_list[0])
+        grade_2 = request.form.get(exams_list[1])
+        grade_3 = request.form.get(exams_list[2])
+        grade_4 = request.form.get(exams_list[3])
 
         user_grades = [grade_1, grade_2, grade_3, grade_4]
         print(user_grades)
 
-    exams_dict = ABIT.get_exams_by_specialty(user_specialty)
-    exams = list(exams_dict.keys())
-    info = ABIT.get_info_by_specialty(user_specialty)
+        user_score = ABIT.calculate_rating_grade(user_grades, exams)
+        user_chance = ABIT.calculate_chance(user_score, user_specialty)
 
-
-    user_university = universities[0]
-    user_score = 0
-    # user_score = ABIT.calculate_rating_grade(user_grades, exams_dict)
-    if user_grades[0] and user_grades[1] and user_grades[2] and user_grades[3]:
-        user_score = ABIT.calculate_rating_grade(user_grades, exams_dict)
-    user_percentage = "98 %"
-
-    return render_template("specialty.html", specialties=specialties, \
-        universities=universities, exams=exams, info=info, user_score=user_score, \
-        user_specialty=user_specialty, user_university=user_university, 
-        user_percentage=user_percentage)
+    return render_template("specialty.html", user_university=user_university, user_grades=user_grades, 
+    user_specialty=user_specialty, exams=exams_list, info=info, user_score=user_score, user_percentage=user_percentage)
 
 def launch_website():
     """
