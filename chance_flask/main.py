@@ -28,7 +28,7 @@ def chance_page():
     universities = ["Український Католицький Університет"]
     specialties = ABIT.get_university_specialties()
     user_specialty = ""
-    user_grades = [0, 0, 0, 0]
+    user_grades = [None, None, None, None]
 
     if request.method == 'POST':
         user_specialty = request.form.get('specialty')
@@ -52,8 +52,10 @@ def chance_page():
 
 
     user_university = universities[0]
-    # user_score = ABIT.calculate_rating_grade(user_grades, exams)
-    user_score = 100
+    user_score = 0
+    # user_score = ABIT.calculate_rating_grade(user_grades, exams_dict)
+    if user_grades[0] and user_grades[1] and user_grades[2] and user_grades[3]:
+        user_score = ABIT.calculate_rating_grade(user_grades, exams_dict)
     user_percentage = "98 %"
 
 
