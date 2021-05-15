@@ -37,14 +37,14 @@ def chance_page():
         grade_2 = request.form.get('grade')
         grade_3 = request.form.get('grade')
         grade_4 = request.form.get('grade')
-        user_grade = []
+        user_grades = [grade_1, grade_2, grade_3, grade_4]
 
     exams = ABIT.get_exams_by_specialty(user_specialty)
     info = ABIT.get_info_by_specialty(user_specialty)
 
     user_university = universities[0]
     user_specialty = specialties[2]
-    user_score = ABIT.calculate_rating_grade(list(exams.values()))
+    user_score = ABIT.calculate_rating_grade(user_grades, exams)
     user_percentage = "98 %"
 
 

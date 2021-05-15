@@ -150,7 +150,7 @@ class AbitInfoADT:
         return result
 
 
-    def calculate_rating_grade(self, grades_list, coefficients_list):
+    def calculate_rating_grade(self, grades_list, coefficients_dict):
         """
         Return calculated rating grade from a given list of grades and
         coefficients.
@@ -170,15 +170,25 @@ class AbitInfoADT:
         e.g.
         197.2 - float
         """
+        grades_dict = {}
+        i = 0
+        for exam in coefficients_dict.keys():
+            grades_dict[exam] = grades_list[i]
+            i += 1
+
         result = 0
-        for subject,grade in grades_list.items():
+        for subject,grade in grades_dict.items():
+            try:
+                grade = float(grade)
+            except ValueError:
+                grade = 0
+                print(grade)
             if subject == 'Середній бал документа про освіту':
                 if grade > 2:
                     grade = min( (grade-2)/0.1 , 100) + 100
                 else:
                     grade = 100
-                print(grade)
-            normal = grade * coefficients_list[subject]
+            normal = grade * coefficients_dict[subject]
             result += normal
         return result
 
