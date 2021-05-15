@@ -48,7 +48,7 @@ def calc():
 
     user_grades = ['', '', '', '']
     user_score = 0
-    user_percentage = "?"
+    user_percentage = "РОМАНЮК ПІДОРАС"
 
     if request.method == 'POST':
         grade_1 = request.form.get(exams_list[0])
