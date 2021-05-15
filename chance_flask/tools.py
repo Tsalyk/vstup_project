@@ -203,7 +203,7 @@ class AbitInfoADT:
                     grade = 100
             normal = grade * coefficients_dict[subject]
             result += normal
-        return result
+        return min(result * 1.02, 200)
 
 
     def calculate_chance(self, rating_grade, university, specialty):
