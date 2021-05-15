@@ -119,7 +119,7 @@ class AbitInfoADT:
 
     def get_exams_by_specialty(self, specialty):
         """
-        Returns list of tuples from subjects_path 
+        Returns list of tuples from subjects_path
         with chosen university and specialty.
 
         Indexes:
@@ -143,12 +143,20 @@ class AbitInfoADT:
         specialty_info = self.specialties[specialty]
         result = {}
         idx = 2
+        third_zno = ""
         while specialty_info[idx] != specialty_info[len(specialty_info)-2]:
-            result[specialty_info[idx]] = specialty_info[idx+2]
+            if "На вибір" in specialty_info[idx]:
+                if third_zno == "":
+                    third_zno = specialty_info[idx].replace(" (На вибір)","")
+                else:
+                    third_zno += " / " + specialty_info[idx].replace(" (На вибір)","")
+                third_zno_coef = specialty_info[idx + 2]
+            else:
+                result[specialty_info[idx]] = specialty_info[idx+2]
             idx += 3
+        result[third_zno] = third_zno_coef
         result[specialty_info[len(specialty_info)-2]] = specialty_info[len(specialty_info)-1]
         return result
-
 
     def calculate_rating_grade(self, grades_list, coefficients_dict):
         """
@@ -176,11 +184,12 @@ class AbitInfoADT:
             grades_dict[exam] = grades_list[i]
             i += 1
 
+        print(grades_dict)
         result = 0
         for subject,grade in grades_dict.items():
             try:
                 grade = float(grade)
-            except ValueError:
+            except TypeError:
                 grade = 0
                 print(grade)
             if subject == 'Середній бал документа про освіту':
