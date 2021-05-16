@@ -34,8 +34,6 @@ class AbitInfoADT:
         self.grades_2019 = self.get_grades_from_json(applicants_2019_path)
         self.specialties = self.get_specialties_info(subjects_path)
 
-
-
     @staticmethod
     def get_specialties_info(path:str) -> dict:
         '''
@@ -61,7 +59,6 @@ class AbitInfoADT:
                         data.append(line)
         specialties[speciality] = data
         return specialties
-
 
     @staticmethod
     def get_grades_from_json(path: str) -> dict:
@@ -199,7 +196,7 @@ class AbitInfoADT:
             except TypeError:
                 grade = 0
             if subject == 'Середній бал документа про освіту':
-                if grade < 12:
+                if grade <= 12:
                     if grade > 2:
                         grade = min( (grade-2)/0.1 , 100) + 100
                     else:
