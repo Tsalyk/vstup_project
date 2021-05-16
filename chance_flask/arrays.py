@@ -62,8 +62,7 @@ class Array:
         return _ArrayIterator(self._elements)
 
     def __repr__(self):
-        '''
-        '''
+        """Returns a string that represents array"""
         repr_str = '['
         for element in self:
             repr_str += str(element) + ', '
@@ -127,30 +126,8 @@ class DynamicArray:
         """Return new array with capacity c."""
         return (c * ctypes.py_object)()
 
-    def insert(self, k, value):
-        """Insert value at index k, shifting subsequent values rightward."""
-        if self._n == self._capacity:
-            self._resize(2 * self._capacity)
-        for j in range(self._n, k, -1):
-            self._A[j] = self._A[j - 1]
-        self._A[k] = value
-        self._n += 1
-
-    def remove(self, value):
-        """Remove first occurrence of value( or  raise ValueError)."""
-        for k in range(self._n):
-            if self._A[k] == value:
-                for j in range(k, self._n - 1):
-                    self._A[j] = self._A[j + 1]
-                self._A[self._n - 1] = None
-                self._n -= 1
-
-                return
-        raise ValueError("value not found")
-
     def __repr__(self):
-        '''
-        '''
+        """Returns a string that represents dynamic array"""
         repr_str = '['
         for element in self:
             repr_str += str(element) + ', '
