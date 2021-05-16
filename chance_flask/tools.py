@@ -112,7 +112,6 @@ class AbitInfoADT:
         """
         if not speciality:
             return ["?", "?", "?", "?"]
-        print(list(self.specialties.keys()))
         specialty_info = self.specialties[speciality]
         specialty_grades = self.grades[speciality]
         quantity = 0
@@ -199,7 +198,6 @@ class AbitInfoADT:
                 grade = float(grade)
             except TypeError:
                 grade = 0
-                print(grade)
             if subject == 'Середній бал документа про освіту':
                 if grade < 12:
                     if grade > 2:

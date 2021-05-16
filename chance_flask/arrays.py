@@ -47,6 +47,11 @@ class Array:
         assert 0 <= index < len(self), "Array subscript out of range"
         self._elements[index] = value
 
+        if value > self.maximal:
+            self.maximal = value
+        if value < self.minimal:
+            self.minimal = value
+
     def clear(self, value):
         """Clears the array by setting each element to the given value"""
         for i in range(len(self)):
