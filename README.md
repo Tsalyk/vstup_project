@@ -64,6 +64,10 @@ Then if you press button "Search" and scroll down, you will see some info about 
 ![4](https://user-images.githubusercontent.com/74105219/118358478-a1851d00-b587-11eb-8805-9fbd21ddd973.jpg)
 
 ***
+### Hosting
+Project is deployed on Heroku:
+* https://ucu-calc.herokuapp.com
+***
 ### Preinstallations
 * <code>pip install Flask</code>
 ***
