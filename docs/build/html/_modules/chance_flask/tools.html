@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>chance_flask.tools &#8212; Vstup Probability 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for chance_flask.tools</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Tools module&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">arrays</span> <span class="kn">import</span> <span class="n">Array</span><span class="p">,</span> <span class="n">DynamicArray</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+
+<div class="viewcode-block" id="AbitInfoADT"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.tools.AbitInfoADT">[docs]</a><span class="k">class</span> <span class="nc">AbitInfoADT</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for storing and processing university data.</span>
+<span class="sd">    User logic:</span>
+<span class="sd">    Input university -&gt; Recieve list of specialties.</span>
+<span class="sd">    Input specialty -&gt; Recieve grade coefficients and specialty info.</span>
+<span class="sd">    Input grades -&gt; Recieve rating grade and a chance of enrollment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">applicants_2019_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">applicants_2020_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subjects_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize ADT</span>
+<span class="sd">        info_path: Файл з даними про кількість місць на спеціальності, кількість заявок, ціну навчання та середній бал у минулому році.</span>
+<span class="sd">        applicants_path: Файл з даними про результати зно вступників на всі спеціальності</span>
+<span class="sd">        subjects_path: Файл з даними про коефіцієнти та потрібні предмети на кожну спеціальність</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grades</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_grades_from_json</span><span class="p">(</span><span class="n">applicants_2020_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grades_2019</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_grades_from_json</span><span class="p">(</span><span class="n">applicants_2019_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specialties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_specialties_info</span><span class="p">(</span><span class="n">subjects_path</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AbitInfoADT.get_specialties_info"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.tools.AbitInfoADT.get_specialties_info">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_specialties_info</span><span class="p">(</span><span class="n">path</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns a dict with data about specialties.</span>
+<span class="sd">        Keys are specialties names and values it are</span>
+<span class="sd">        DynamicArray ADT.</span>
+<span class="sd">        DynamicArray ADT format:(price,amount,subj,min grade, coef, subj....)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">specialties</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">DynamicArray</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">university_data</span><span class="p">:</span>
+            <span class="n">speciality</span> <span class="o">=</span> <span class="n">university_data</span><span class="o">.</span><span class="n">readline</span><span class="p">()[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">university_data</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                    <span class="n">specialties</span><span class="p">[</span><span class="n">speciality</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+                    <span class="n">speciality</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">DynamicArray</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">specialties</span><span class="p">[</span><span class="n">speciality</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="n">specialties</span></div>
+
+<div class="viewcode-block" id="AbitInfoADT.get_grades_from_json"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.tools.AbitInfoADT.get_grades_from_json">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_grades_from_json</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dict with grades, where</span>
+<span class="sd">        a key is the name of the speciality;</span>
+<span class="sd">        a value consists of 2 Arrays ADT which contain grades (float);</span>
+<span class="sd">        first Array - grades those, who entered the university;</span>
+<span class="sd">        second Array - grades those, who were rejected</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">entered</span><span class="p">,</span> <span class="n">rejected</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="n">Array</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+                <span class="n">entered</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
+                <span class="n">rejected</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">entered</span><span class="p">,</span> <span class="n">rejected</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="AbitInfoADT.get_university_specialties"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.tools.AbitInfoADT.get_university_specialties">[docs]</a>    <span class="k">def</span> <span class="nf">get_university_specialties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns list of specialties from subjects_path </span>
+<span class="sd">        with chosen university and specialty.</span>
+<span class="sd">        e.g.</span>
+<span class="sd">        [&quot;Artes Liberales&quot;, &quot;Business Analytics&quot;, &quot;Computer Science&quot;, ...]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specialties</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="AbitInfoADT.get_info_by_specialty"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.tools.AbitInfoADT.get_info_by_specialty">[docs]</a>    <span class="k">def</span> <span class="nf">get_info_by_specialty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speciality</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns list of items from info_path </span>
+<span class="sd">        with chosen university and specialty.</span>
+<span class="sd">        Indexes:</span>
+<span class="sd">        0: Число поданих заяв 2020 - int</span>
+<span class="sd">        1: Ліцензований обсяг - int</span>
+<span class="sd">        2: Середній рейтинговий бал вступників - round(float, 2)</span>
+<span class="sd">        3: Вартість навчання (з пробілом) - str</span>
+<span class="sd">        e.g.</span>
+<span class="sd">        [403, 50, 197.66, &quot;75 000&quot;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">speciality</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="s2">&quot;?&quot;</span><span class="p">]</span>
+        <span class="n">specialty_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specialties</span><span class="p">[</span><span class="n">speciality</span><span class="p">]</span>
+        <span class="n">specialty_grades</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grades</span><span class="p">[</span><span class="n">speciality</span><span class="p">]</span>
+        <span class="n">quantity</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">quantity</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">specialty_grades</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">speciality_price</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">specialty_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]))[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">specialty_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]))[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span>
+        <span class="n">license_quantity</span> <span class="o">=</span> <span class="n">specialty_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">average_note</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">specialty_grades</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">specialty_grades</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">quantity</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">license_quantity</span><span class="p">),</span> <span class="n">average_note</span><span class="p">,</span> <span class="n">speciality_price</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="AbitInfoADT.get_exams_by_specialty"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.tools.AbitInfoADT.get_exams_by_specialty">[docs]</a>    <span class="k">def</span> <span class="nf">get_exams_by_specialty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specialty</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns list of tuples from subjects_path</span>
+<span class="sd">        with chosen university and specialty.</span>
+<span class="sd">        Indexes:</span>
+<span class="sd">        0: Предмет і коеф - tuple</span>
+<span class="sd">        1: Предмет і коеф - tuple</span>
+<span class="sd">        2: Предмет і коеф - tuple</span>
+<span class="sd">        3: Середній бал і коеф - tuple</span>
+<span class="sd">        e.g.</span>
+<span class="sd">        {&#39;Українська мова та література&#39; : 0.35,</span>
+<span class="sd">        &#39;Історія України&#39; : 0.3,</span>
+<span class="sd">        &#39;Іноземна мова (На вибір)&#39; : 0.25,</span>
+<span class="sd">        &#39;Географія (На вибір)&#39; : 0.25,</span>
+<span class="sd">        &#39;Середній бал документа про освіту&#39; : 0.1}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">specialty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;EXAM 1&#39;</span> <span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+         <span class="s1">&#39;EXAM 2&#39;</span> <span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span>
+         <span class="s1">&#39;EXAM 3&#39;</span> <span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span>
+         <span class="s1">&#39;GRADE&#39;</span> <span class="p">:</span> <span class="mf">0.1</span><span class="p">}</span>
+        <span class="n">specialty_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">specialties</span><span class="p">[</span><span class="n">specialty</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">third_zno</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">third_zno_coef</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">specialty_info</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="n">specialty_info</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">specialty_info</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="s2">&quot;На вибір&quot;</span> <span class="ow">in</span> <span class="n">specialty_info</span><span class="p">[</span><span class="n">idx</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">third_zno</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="n">third_zno</span> <span class="o">=</span> <span class="n">specialty_info</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; (На вибір)&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">third_zno</span> <span class="o">+=</span> <span class="s2">&quot; / &quot;</span> <span class="o">+</span> <span class="n">specialty_info</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; (На вибір)&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">third_zno_coef</span> <span class="o">=</span> <span class="n">specialty_info</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">specialty_info</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span> <span class="o">=</span> <span class="n">specialty_info</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">idx</span> <span class="o">+=</span> <span class="mi">3</span>
+        <span class="k">if</span> <span class="n">third_zno_coef</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">third_zno</span><span class="p">]</span> <span class="o">=</span> <span class="n">third_zno_coef</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">specialty_info</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">specialty_info</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="n">specialty_info</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">specialty_info</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="AbitInfoADT.calculate_rating_grade"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.tools.AbitInfoADT.calculate_rating_grade">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_rating_grade</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grades_list</span><span class="p">,</span> <span class="n">coefficients_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return calculated rating grade from a given list of grades and</span>
+<span class="sd">        coefficients.</span>
+<span class="sd">        calculate_rating_grade(</span>
+<span class="sd">        {&quot;Українська мова та література&quot; : 192.2,</span>
+<span class="sd">        &quot;Історія України&quot; : 199.9,</span>
+<span class="sd">        &quot;Іноземна мова (На вибір)&quot; : 195.7,</span>
+<span class="sd">        &quot;Середній бал документа про освіту&quot; : 11.5},</span>
+<span class="sd">        {&#39;Українська мова та література&#39; : 0.35,</span>
+<span class="sd">        &#39;Історія України&#39; : 0.3,</span>
+<span class="sd">        &#39;Іноземна мова (На вибір)&#39; : 0.25,</span>
+<span class="sd">        &#39;Географія (На вибір)&#39; : 0.25,</span>
+<span class="sd">        &#39;Середній бал документа про освіту&#39; : 0.1})</span>
+<span class="sd">        e.g.</span>
+<span class="sd">        197.2 - float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">grades_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">exam</span> <span class="ow">in</span> <span class="n">coefficients_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">grades_dict</span><span class="p">[</span><span class="n">exam</span><span class="p">]</span> <span class="o">=</span> <span class="n">grades_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">subject</span><span class="p">,</span><span class="n">grade</span> <span class="ow">in</span> <span class="n">grades_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">grade</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">grade</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">grade</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">subject</span> <span class="o">==</span> <span class="s1">&#39;Середній бал документа про освіту&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">grade</span> <span class="o">&lt;=</span> <span class="mi">12</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">grade</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">grade</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span> <span class="p">(</span><span class="n">grade</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mf">0.1</span> <span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="o">+</span> <span class="mi">100</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">grade</span> <span class="o">=</span> <span class="mi">100</span>
+            <span class="n">normal</span> <span class="o">=</span> <span class="n">grade</span> <span class="o">*</span> <span class="n">coefficients_dict</span><span class="p">[</span><span class="n">subject</span><span class="p">]</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">normal</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">result</span> <span class="o">*</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AbitInfoADT.calculate_chance"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.tools.AbitInfoADT.calculate_chance">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_chance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rating_grade</span><span class="p">,</span><span class="n">specialty</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return chance of entering specialty at university</span>
+<span class="sd">        with a given rating grade from applicants_path.</span>
+<span class="sd">        Method:</span>
+<span class="sd">        1. Зчитати дані по спеціальності по різних роках.</span>
+<span class="sd">        2. Порахувати в яких межах варіюється кількість тих,</span>
+<span class="sd">        хто міг пройти, але відмовився.</span>
+<span class="sd">        3. Порахувати динаміку середнього балу вступників</span>
+<span class="sd">        4. Знайти &quot;проміжок неточності&quot; на основі динаміки та меж відмов.</span>
+<span class="sd">        5. Якщо rating_grade не входить в проміжок, вивести 100% або 0%.</span>
+<span class="sd">        6. Якщо rating_grade входить в проміжок, то:</span>
+<span class="sd">        -. симулювати рандомні значення з визначених проміжків 10 000</span>
+<span class="sd">        раз та вивести відсоток тих, в яких rating_grade було достатньо.</span>
+<span class="sd">        calculate_chance( 199.2, &quot;ucu&quot;, &quot;Системний аналіз&quot;)</span>
+<span class="sd">        e.g.</span>
+<span class="sd">        98%</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">license_quantity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_info_by_specialty</span><span class="p">(</span><span class="n">specialty</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">abiturients_2020</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grades</span><span class="p">[</span><span class="n">specialty</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">abiturients_2019</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grades_2019</span><span class="p">[</span><span class="n">specialty</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">abiturients_2019</span> <span class="o">=</span> <span class="n">abiturients_2020</span>
+
+        <span class="n">all_applications_2020</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">abiturients_2020</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">abiturients_2020</span><span class="p">[</span><span class="mi">1</span><span class="p">]))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">all_applications_2019</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">abiturients_2019</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">abiturients_2019</span><span class="p">[</span><span class="mi">1</span><span class="p">]))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">check_on_100_percent</span><span class="p">(</span><span class="n">all_applications_year</span><span class="p">,</span> <span class="n">grade</span><span class="p">,</span> <span class="n">license_quantity_speciality</span><span class="p">):</span>
+            <span class="n">chance_year</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">license_quantity_speciality</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">rating_grade</span> <span class="o">&gt;</span> <span class="n">all_applications_year</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">chance_2020</span> <span class="o">=</span> <span class="n">check_on_100_percent</span><span class="p">(</span><span class="n">all_applications_2020</span><span class="p">,</span><span class="n">rating_grade</span><span class="p">,</span><span class="n">license_quantity</span><span class="p">)</span>
+        <span class="n">chance_2019</span> <span class="o">=</span> <span class="n">check_on_100_percent</span><span class="p">(</span><span class="n">all_applications_2019</span><span class="p">,</span><span class="n">rating_grade</span><span class="p">,</span><span class="n">license_quantity</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">chance_2019</span> <span class="ow">and</span> <span class="n">chance_2020</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;100 %&quot;</span>
+
+        <span class="n">max_grade_2020</span><span class="p">,</span><span class="n">min_grade_2020</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">abiturients_2020</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">min</span><span class="p">(</span><span class="n">abiturients_2020</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">max_grade_2019</span><span class="p">,</span><span class="n">min_grade_2019</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">abiturients_2019</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">min</span><span class="p">(</span><span class="n">abiturients_2019</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">find_refused_quantity</span><span class="p">(</span><span class="n">abiturients_year</span><span class="p">,</span> <span class="n">min_grade_year</span><span class="p">):</span>
+            <span class="n">refused_quantity_year</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">refused_persons</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">person</span> <span class="ow">in</span> <span class="n">abiturients_year</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">person</span> <span class="o">&gt;</span> <span class="n">min_grade_year</span><span class="p">:</span>
+                    <span class="n">refused_quantity_year</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">refused_persons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">person</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">refused_quantity_year</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">refused_persons</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">refused_persons</span><span class="p">),</span> <span class="n">refused_persons</span>
+
+        <span class="n">refused_quantity_2020</span><span class="p">,</span> <span class="n">max_refused_grade_2020</span><span class="p">,</span> <span class="n">min_refused_grade_2020</span><span class="p">,</span> <span class="n">refused_persons_2020</span> <span class="o">=</span> <span class="n">find_refused_quantity</span><span class="p">(</span><span class="n">abiturients_2020</span><span class="p">,</span> <span class="n">min_grade_2020</span><span class="p">)</span>
+        <span class="n">refused_quantity_2019</span><span class="p">,</span> <span class="n">max_refused_grade_2019</span><span class="p">,</span> <span class="n">min_refused_grade_2019</span><span class="p">,</span><span class="n">refused_persons_2019</span> <span class="o">=</span> <span class="n">find_refused_quantity</span><span class="p">(</span><span class="n">abiturients_2019</span><span class="p">,</span> <span class="n">min_grade_2019</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">generate_year</span><span class="p">(</span><span class="n">all_applications_year</span><span class="p">,</span> <span class="n">refused_quantity_2020</span><span class="p">,</span> <span class="n">refused_quantity_2019</span><span class="p">,</span> <span class="n">student_grade</span><span class="p">,</span> <span class="n">license_quantity</span><span class="p">):</span>
+            <span class="n">all_applications_year</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">all_applications_year</span><span class="p">)</span>
+            <span class="n">min_quantity</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">refused_quantity_2019</span><span class="p">,</span><span class="n">refused_quantity_2020</span><span class="p">)</span> <span class="o">-</span> <span class="mi">5</span>
+            <span class="n">max_quantity</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">refused_quantity_2020</span><span class="p">,</span><span class="n">refused_quantity_2019</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span>
+            <span class="n">year_refuse_quantity</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">min_quantity</span><span class="p">,</span> <span class="n">max_quantity</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">year_refuse_quantity</span><span class="p">):</span>
+                <span class="n">first_50_people</span> <span class="o">=</span> <span class="n">all_applications_year</span><span class="p">[:</span><span class="n">license_quantity</span><span class="p">]</span>
+                <span class="n">refused_person</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">first_50_people</span><span class="p">)</span>
+                <span class="n">all_applications_year</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">refused_person</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">student_grade</span> <span class="o">&gt;</span> <span class="n">all_applications_year</span><span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">license_quantity</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">all_applications_year</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)]:</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">successfuel_attemp</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">generate_year</span><span class="p">(</span><span class="n">all_applications_2020</span><span class="p">,</span><span class="n">refused_quantity_2020</span><span class="p">,</span><span class="n">refused_quantity_2019</span><span class="p">,</span><span class="n">rating_grade</span><span class="p">,</span><span class="n">license_quantity</span><span class="p">):</span>
+                <span class="n">successfuel_attemp</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">chance</span> <span class="o">=</span> <span class="n">successfuel_attemp</span><span class="o">/</span><span class="mi">10000</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">if</span> <span class="n">chance</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chance</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span> <span class="nb">round</span><span class="p">(</span><span class="n">chance</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> %&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">chance</span><span class="p">)</span><span class="si">}</span><span class="s2"> %&quot;</span></div></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">AbitInfoADT</span><span class="p">(</span><span class="s2">&quot;chance_flask/data/abiturients_ucu_2019.json&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;chance_flask/data/abiturients_ucu_2020.json&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;chance_flask/data/coefficients&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">get_exams_by_specialty</span><span class="p">(</span><span class="s2">&quot;Богослов&#39;я&quot;</span><span class="p">))</span>
+    <span class="n">grade</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">calculate_rating_grade</span><span class="p">([</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                           <span class="p">{</span><span class="s1">&#39;Українська мова та література&#39;</span><span class="p">:</span> <span class="mf">0.35</span><span class="p">,</span>
+                            <span class="s1">&#39;Історія України&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span>
+                            <span class="s1">&#39;Географія&#39;</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span>
+                            <span class="s1">&#39;Середній бал документа про освіту&#39;</span><span class="p">:</span> <span class="mf">0.1</span>
+                            <span class="p">}</span>
+                           <span class="p">)</span>
+    <span class="nb">print</span><span class="p">([</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">test</span><span class="o">.</span><span class="n">grades_2019</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">calculate_chance</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span><span class="s2">&quot;Право&quot;</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Vstup Probability</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">chance_flask</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Taras Onyshkiv, Mykhailo-Markiian Tsalyk, Severyn-Dmytro Peleshko, Tymofii Kozak, Oksana Sadova.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

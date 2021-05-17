@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>chance_flask.main &#8212; Vstup Probability 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for chance_flask.main</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module that connects HTML script with database analysis functions.</span>
+<span class="sd">To start a website you need to run code from this module.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">url_for</span>
+<span class="kn">from</span> <span class="nn">tools</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="index_page"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.main.index_page">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/ucu_chance&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index_page</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Render index page with info.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="chance_page"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.main.chance_page">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/chance_calculator&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">chance_page</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Render chance page with specialty selection&quot;&quot;&quot;</span>
+
+    <span class="n">specialties</span> <span class="o">=</span> <span class="n">ABIT</span><span class="o">.</span><span class="n">get_university_specialties</span><span class="p">()</span>
+    <span class="n">user_specialty</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">user_specialty</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;specialty&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user_specialty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;chance.html&quot;</span><span class="p">,</span> <span class="n">specialties</span><span class="o">=</span><span class="n">specialties</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;calc&#39;</span><span class="p">,</span> <span class="n">user_specialty</span><span class="o">=</span><span class="n">user_specialty</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;chance.html&quot;</span><span class="p">,</span> <span class="n">specialties</span><span class="o">=</span><span class="n">specialties</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="calc"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.main.calc">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/calc&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">calc</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a webpage with count of books and information</span>
+<span class="sd">    table about all books for every given language.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user_university</span> <span class="o">=</span> <span class="s2">&quot;Український Католицький Університет&quot;</span>
+    <span class="n">user_specialty</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;user_specialty&#39;</span><span class="p">)</span>
+
+    <span class="n">info</span> <span class="o">=</span> <span class="n">ABIT</span><span class="o">.</span><span class="n">get_info_by_specialty</span><span class="p">(</span><span class="n">user_specialty</span><span class="p">)</span>
+    <span class="n">exams</span> <span class="o">=</span> <span class="n">ABIT</span><span class="o">.</span><span class="n">get_exams_by_specialty</span><span class="p">(</span><span class="n">user_specialty</span><span class="p">)</span>
+    <span class="n">exams_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">exams</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="n">user_grades</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
+    <span class="n">user_score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">user_percentage</span> <span class="o">=</span> <span class="s2">&quot;?&quot;</span>
+
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">grade_1</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">exams_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">grade_2</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">exams_list</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">grade_3</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">exams_list</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">grade_4</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">exams_list</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+        <span class="n">user_grades</span> <span class="o">=</span> <span class="p">[</span><span class="n">grade_1</span><span class="p">,</span> <span class="n">grade_2</span><span class="p">,</span> <span class="n">grade_3</span><span class="p">,</span> <span class="n">grade_4</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">user_grades</span><span class="p">)</span>
+
+        <span class="n">user_score</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">ABIT</span><span class="o">.</span><span class="n">calculate_rating_grade</span><span class="p">(</span><span class="n">user_grades</span><span class="p">,</span> <span class="n">exams</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">user_percentage</span> <span class="o">=</span> <span class="n">ABIT</span><span class="o">.</span><span class="n">calculate_chance</span><span class="p">(</span><span class="n">user_score</span><span class="p">,</span> <span class="n">user_specialty</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;specialty.html&quot;</span><span class="p">,</span> <span class="n">user_university</span><span class="o">=</span><span class="n">user_university</span><span class="p">,</span> <span class="n">user_grades</span><span class="o">=</span><span class="n">user_grades</span><span class="p">,</span> 
+    <span class="n">user_specialty</span><span class="o">=</span><span class="n">user_specialty</span><span class="p">,</span> <span class="n">exams</span><span class="o">=</span><span class="n">exams_list</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="n">info</span><span class="p">,</span> <span class="n">user_score</span><span class="o">=</span><span class="n">user_score</span><span class="p">,</span> <span class="n">user_percentage</span><span class="o">=</span><span class="n">user_percentage</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="launch_website"><a class="viewcode-back" href="../../chance_flask.html#chance_flask.main.launch_website">[docs]</a><span class="k">def</span> <span class="nf">launch_website</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function that launches the website.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">launch_website</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Vstup Probability</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">chance_flask</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Taras Onyshkiv, Mykhailo-Markiian Tsalyk, Severyn-Dmytro Peleshko, Tymofii Kozak, Oksana Sadova.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
