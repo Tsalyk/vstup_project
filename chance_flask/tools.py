@@ -13,15 +13,6 @@ class AbitInfoADT:
     Input university -> Recieve list of specialties.
     Input specialty -> Recieve grade coefficients and specialty info.
     Input grades -> Recieve rating grade and a chance of enrollment.
-
-    Від Тіми:
-    Для реалізації класу беріть якийсь АДТ, а не просто лісти.
-    Всі потрібні виводи я прописав. 
-    Я всюди прописував параметр university, але можете його забрати, бо у нас поки лише УКУ.
-    Ініціалізація буде відбуватись завдяки записуванню даних з файлів у якийсь АДТ. 
-    Функції для цього я не прописував, але робіть їх staticmethod'aми десь під самим __init__().
-    Можете міняти вигляд того, що приймає функція, але потрібні саме такі ретурни.
-    Для функції calculate_chance краще робити допоміжні функції.
     """
     def __init__(self, applicants_2019_path: str, applicants_2020_path: str, subjects_path: str):
         """
